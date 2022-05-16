@@ -22,7 +22,8 @@ First you just need to run the API, either using `go run .` or build it and run 
 
 You can query the following endpoint to simulate down impact of each devices. It get the tpology example from the `topology.json` file.
 
-```curl http://127.0.0.1:8080/topology/example/device/every/down/impact | jq
+```
+curl http://127.0.0.1:8080/topology/example/device/every/down/impact | jq
 {
     "impact_simulation": {
         "edge-0": null,
