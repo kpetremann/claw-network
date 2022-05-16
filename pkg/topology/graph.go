@@ -103,7 +103,7 @@ func (g *Graph) ConnectNodeToLinks() {
 
 func (g *Graph) IsLinkSupported(southNode *Node, northNode *Node) (bool, string) {
 	if northNode == nil || southNode == nil {
-		return false, "refering to unknown node"
+		return false, "referring to unknown node"
 	}
 	if northNode.Layer < southNode.Layer {
 		return false, "cyclic graph links are not supported"

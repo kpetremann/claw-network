@@ -12,6 +12,30 @@ Important notice:
 This is in development and not fully usable yet. But you can play with it :)
 ```
 
+## Usage example
+
+First you just need to run the API, either using `go run .` or build it and run the executable.
+
+You can query the following endpoint to simulate down impact of each devices. It get the tpology example from the `topology.json` file.
+
+```curl http://127.0.0.1:8080/topology/example/device/every/down/impact | jq
+{
+    "impact_simulation": {
+        "edge-0": null,
+        "edge-1": null,
+        "fabric-1-01": [
+            "tor-01-01"
+        ],
+        "fabric-1-02": null,
+        ...
+    }
+}
+```
+
+As you can see, `tor-01-01` would be down if we shut `fabric-1-01`.
+
+Note: more advanced examples will be provided soon, with more complex scenarios.
+
 ## Todo / coming features
 
 - add tests

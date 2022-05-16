@@ -3053,37 +3053,37 @@
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-2-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.20->10.0.0.21"
       },
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-2-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.22->10.0.0.23"
       },
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-3-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.24->10.0.0.25"
       },
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-3-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.26->10.0.0.27"
       },
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-4-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.28->10.0.0.29"
       },
       {
         "south_node": "tor-01-01",
         "north_node": "fabric-4-01",
-        "status": true,
+        "status": false,
         "uid": "10.0.0.30->10.0.0.31"
       },
       {
