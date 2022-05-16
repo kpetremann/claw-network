@@ -1,5 +1,9 @@
 # ClawNetwork
 
+![status](https://img.shields.io/badge/status-in%20development-orange)
+[![Go Reference](https://pkg.go.dev/badge/github.com/kpetremann/claw-network.svg)](https://pkg.go.dev/github.com/kpetremann/claw-network)
+![GitHub](https://img.shields.io/github/license/kpetremann/claw-network)
+
 ## Overview
 
 ClawNetwork is a tool to simulate a network and evaluate failures impacts on Top of Racks.
