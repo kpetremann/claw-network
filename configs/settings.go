@@ -1,6 +1,6 @@
 package configs
 
-const TopologyFile = "topology.json"
+const TopologyBaseDir = "./examples/"
 const TopDeviceRole = "edge"
 const BottomDeviceRole = "tor"
 

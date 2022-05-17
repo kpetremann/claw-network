@@ -5,13 +5,14 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/pkg/topology"
 )
 
 // Load topology information from JSON file
 func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
-	jsonFile, err := os.Open(topologyFile)
+	jsonFile, err := os.Open(configs.TopologyBaseDir + topologyFile)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +30,7 @@ func SaveTopologyToFile(fileName string, graph *topology.Graph) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile(fileName, jsonTopology, 0644); err != nil {
+	if err := ioutil.WriteFile(configs.TopologyBaseDir+fileName, jsonTopology, 0644); err != nil {
 		return err
 	}
 

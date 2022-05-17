@@ -44,7 +44,8 @@ Note: more advanced examples will be provided soon, with more complex scenarios.
 ## Todo / coming features
 
 - add tests
-- get/list/push/delete a new topology
+- return better errors to the user
+- get/list/delete a new topology
 - simulate impact of link shutdown
 - simulate impact of multiple shutdown
 - statistics: nodes, links, down/up, nomber of node which can reach edge

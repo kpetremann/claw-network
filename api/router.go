@@ -11,7 +11,6 @@ import (
 func ListenAndServer() {
 	router := gin.Default()
 
-	router.GET("/topology/example/device/every/down/impact", SimulationDownImpactExample)
 	router.POST("/topology/custom/device/every/down/impact", SimulateDownImpactProvidedTopology)
 	router.POST("/topology/:topology", AddTopology)
 	router.GET("/topology/:topology/device/every/down/impact", SimulateDownImpactExistingTopology)

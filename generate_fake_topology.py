@@ -8,8 +8,8 @@ import json
 from ipaddress import ip_network
 from typing import Generator
 
-PODS = 20
-RACKS_PER_POD = 20
+PODS = 2
+RACKS_PER_POD = 2
 
 
 def _gen_interco() -> Generator:
@@ -46,7 +46,7 @@ def create_all_nodes() -> list[dict]:
     nodes = []
     for i in range(1, PODS + 1):
         # ToR
-        for j in range(RACKS_PER_POD):
+        for j in range(1, RACKS_PER_POD):
             hostname = f"tor-{j:02d}-{i:02d}"
             node = create_node(hostname, "tor", 1)
             nodes.append(node)
