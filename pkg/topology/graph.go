@@ -116,7 +116,7 @@ func (g *Graph) IsLinkSupported(southNode *Node, northNode *Node) (bool, string)
 }
 
 func (g *Graph) GetNodeList() []*Node {
-	allNodes := make([]*Node, len(g.Nodes))
+	allNodes := make([]*Node, 0, len(g.Nodes))
 
 	for _, node := range g.Nodes {
 		allNodes = append(allNodes, node)
@@ -126,7 +126,7 @@ func (g *Graph) GetNodeList() []*Node {
 }
 
 func (g *Graph) GetLinkList() []*Link {
-	allLinks := make([]*Link, len(g.Links))
+	allLinks := make([]*Link, 0, len(g.Links))
 
 	for _, link := range g.Links {
 		allLinks = append(allLinks, link)
