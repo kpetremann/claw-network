@@ -73,7 +73,21 @@ func SimulateDownImpactExistingTopology(context *gin.Context) {
 }
 
 func AddTopology(context *gin.Context) {
-	context.JSON(501, "not implemented yet")
+	topologyName := context.Param("topology")
+	var graph topology.Graph
+	err := context.ShouldBind(&graph)
+
+	if err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	if err := backends.SaveTopologyToFile(topologyName+".json", &graph); err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	context.JSON(200, "topology saved")
 }
 
 func DeleteTopology(context *gin.Context) {

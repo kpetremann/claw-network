@@ -13,6 +13,7 @@ func ListenAndServer() {
 
 	router.GET("/topology/example/device/every/down/impact", SimulationDownImpactExample)
 	router.POST("/topology/custom/device/every/down/impact", SimulateDownImpactProvidedTopology)
+	router.POST("/topology/:topology", AddTopology)
 	router.GET("/topology/:topology/device/every/down/impact", SimulateDownImpactExistingTopology)
 
 	router.GET("/health", func(c *gin.Context) {

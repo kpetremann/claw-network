@@ -21,3 +21,17 @@ func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {
 	json.Unmarshal(byteValue, &topo)
 	return &topo, nil
 }
+
+// Save topology in a JSON file
+func SaveTopologyToFile(fileName string, graph *topology.Graph) error {
+	jsonTopology, err := json.Marshal(graph)
+	if err != nil {
+		return err
+	}
+
+	if err := ioutil.WriteFile(fileName, jsonTopology, 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
