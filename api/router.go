@@ -16,6 +16,7 @@ func ListenAndServer() {
 
 	router.GET("/topology", s.ListTopology)
 
+	router.GET("/topology/:topology", s.GetTopology)
 	router.POST("/topology/:topology", s.AddTopology)
 	router.DELETE("/topology/:topology", s.DeleteTopology)
 	router.POST("/topology/custom/device/each/down/impact", s.SimulateDownImpactProvidedTopology)

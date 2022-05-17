@@ -98,7 +98,21 @@ func (s *SimulationManager) ListTopology(context *gin.Context) {
 }
 
 func (s *SimulationManager) GetTopology(context *gin.Context) {
-	context.JSON(200, "not implemented yet")
+	topologyName := context.Param("topology")
+	repo := <-s.getRepository
+
+	if err := repo.UpdateTopology(); err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	topo, err := repo.LoadTopology(topologyName)
+	if err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	context.JSON(200, topo)
 }
 
 func (s *SimulationManager) DeleteTopology(context *gin.Context) {
