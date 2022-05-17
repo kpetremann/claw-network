@@ -48,8 +48,9 @@ func SimulateDownImpactProvidedTopology(context *gin.Context) {
 }
 
 func SimulateDownImpactExistingTopology(context *gin.Context) {
+	var repo backends.TopologyRepository
 	topologyName := context.Param("topology")
-	graph, err := backends.LoadTopologyFromFile(topologyName + ".json")
+	graph, err := repo.LoadTopology(topologyName + ".json")
 
 	if err != nil {
 		context.JSON(500, err)
@@ -67,6 +68,7 @@ func SimulateDownImpactExistingTopology(context *gin.Context) {
 
 func AddTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
+	var repo backends.TopologyRepository
 	var graph topology.Graph
 	err := context.ShouldBind(&graph)
 
@@ -75,7 +77,7 @@ func AddTopology(context *gin.Context) {
 		return
 	}
 
-	if err := backends.SaveTopologyToFile(topologyName+".json", &graph); err != nil {
+	if err := repo.SaveTopology(topologyName+".json", &graph); err != nil {
 		context.JSON(500, err)
 		return
 	}

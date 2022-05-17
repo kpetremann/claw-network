@@ -46,8 +46,7 @@ func (t *TopologyRepository) DeleteTopology(topologyName string) error {
 	return nil
 }
 
-// Load topology information from JSON file
-func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {
+func (t *TopologyRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
 	byteValue, err := os.ReadFile(configs.TopologyBaseDir + topologyFile)
 	if err != nil {
@@ -61,8 +60,7 @@ func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {
 	return &topo, nil
 }
 
-// Save topology in a JSON file
-func SaveTopologyToFile(fileName string, graph *topology.Graph) error {
+func (t *TopologyRepository) SaveTopology(fileName string, graph *topology.Graph) error {
 	jsonTopology, err := json.Marshal(graph)
 	if err != nil {
 		return err
