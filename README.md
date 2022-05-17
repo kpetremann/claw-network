@@ -16,14 +16,45 @@ Important notice:
 This is in development and not fully usable yet. But you can play with it :)
 ```
 
-## Usage example
+## Usage
 
-First you just need to run the API, either using `go run .` or build it and run the executable.
+### Quickstart
 
-You can query the following endpoint to simulate down impact of each devices. It get the tpology example from the `topology.json` file.
+Simply run ClawNetwork app using `go run .`
+
+Alternative: build the binary via `go build` and run it.
+
+### Manage stored topologies
+
+- GET `/topology`: list stored topologies
+- GET `/topology/:topology_name`: get topology definition
+- POST `/topology/:topology_name`: create a new topology
+- DELETE `/topology/:topology_name`: delete a topology
+
+### Simulation on a stored topology
+
+- GET `/topology/:topology_name/device/:device/down/impact`: run simulations on existing topology
+- POST `/topology/custom/device/:device/down/impact`: run simulations on topology provided in the request body
+
+It will run a simulation on a stored topology.
+
+If `:device` is set to `each`, it will simulate failure impact of each devices excluding Top of Racks.
+
+#### Example
+
+Topology = 4 healthy fabric nodes + 4 healthy ToR
+
+Simulations:
+- first simulation considering first fabric node as down
+- second simulation considering second fabric node as down but with the first up
+- ...
+
+## Example usecase
+
+You can query the following endpoint to simulate down impact of each devices. It get the tppology example from the `example/full_topology_with_issues.json`.
 
 ```
-curl http://127.0.0.1:8080/topology/example/device/every/down/impact | jq
+curl http://127.0.0.1:8080/topology/full_topology_with_issues/device/every/down/impact | jq
 {
     "impact_simulation": {
         "edge-0": null,
@@ -38,6 +69,8 @@ curl http://127.0.0.1:8080/topology/example/device/every/down/impact | jq
 ```
 
 As you can see, `tor-01-01` would be down if we shut `fabric-1-01`.
+
+The topology defined in `example/full_topology_with_issues.json`, also specifies some devices as down. Here all the fabric of pod 01 has been set to down except for `fabric-1-01`. This is why if there is a failure on this device, it will impact `tor-01-01` as this ToR only had one healthy uplink.
 
 Note: more advanced examples will be provided soon, with more complex scenarios.
 
