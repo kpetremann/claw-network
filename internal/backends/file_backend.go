@@ -3,10 +3,40 @@ package backends
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/pkg/topology"
 )
+
+const jsonSuffix = ".json"
+
+type TopologyRepository struct {
+	Topologies []string
+}
+
+func (t *TopologyRepository) UpdateTopology() error {
+	files, err := os.ReadDir(configs.TopologyBaseDir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		fileName := file.Name()
+		if filepath.Ext(fileName) != jsonSuffix {
+			continue
+		}
+
+		t.Topologies = append(t.Topologies, strings.TrimSuffix(fileName, jsonSuffix))
+	}
+
+	return nil
+}
 
 // Load topology information from JSON file
 func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {

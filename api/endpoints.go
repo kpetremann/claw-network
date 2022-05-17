@@ -83,14 +83,20 @@ func AddTopology(context *gin.Context) {
 	context.JSON(200, "topology saved")
 }
 
-func DeleteTopology(context *gin.Context) {
-	context.JSON(501, "not implemented yet")
-}
-
 func ListTopology(context *gin.Context) {
-	context.JSON(501, "not implemented yet")
+	var repo backends.TopologyRepository
+	if err := repo.UpdateTopology(); err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	context.JSON(200, repo)
 }
 
 func GetTopology(context *gin.Context) {
 	context.JSON(200, "not implemented yet")
+}
+
+func DeleteTopology(context *gin.Context) {
+	context.JSON(501, "not implemented yet")
 }
