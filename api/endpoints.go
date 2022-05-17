@@ -98,5 +98,13 @@ func GetTopology(context *gin.Context) {
 }
 
 func DeleteTopology(context *gin.Context) {
-	context.JSON(501, "not implemented yet")
+	topologyName := context.Param("topology")
+	var repo backends.TopologyRepository
+
+	if err := repo.DeleteTopology(topologyName); err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	context.JSON(200, "deleted")
 }

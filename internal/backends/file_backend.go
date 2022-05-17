@@ -38,6 +38,14 @@ func (t *TopologyRepository) UpdateTopology() error {
 	return nil
 }
 
+func (t *TopologyRepository) DeleteTopology(topologyName string) error {
+	if err := os.Remove(configs.TopologyBaseDir + topologyName + jsonSuffix); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Load topology information from JSON file
 func LoadTopologyFromFile(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
