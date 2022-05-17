@@ -1,7 +1,7 @@
 # ClawNetwork
 
 ![status](https://img.shields.io/badge/status-in%20development-orange)
-[![Go Reference](https://pkg.go.dev/badge/github.com/kpetremann/claw-network.svg)](https://pkg.go.dev/github.com/kpetremann/claw-network)
+![Go](https://img.shields.io/github/go-mod/go-version/kpetremann/claw-network)
 ![GitHub](https://img.shields.io/github/license/kpetremann/claw-network)
 
 ## Overview
