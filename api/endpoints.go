@@ -78,33 +78,23 @@ func (s *SimulationManager) AddTopology(context *gin.Context) {
 	}
 
 	repo := <-s.getRepository
-	if err := repo.SaveTopology(topologyName+".json", &graph); err != nil {
+	if err := repo.SaveTopology(topologyName, &graph); err != nil {
 		context.JSON(500, err)
 		return
 	}
+
+	s.writeRepository <- repo.Topologies
 
 	context.JSON(200, "topology saved")
 }
 
 func (s *SimulationManager) ListTopology(context *gin.Context) {
-	repo := <-s.getRepository
-
-	if err := repo.UpdateTopology(); err != nil {
-		context.JSON(500, err)
-		return
-	}
-
-	context.JSON(200, repo)
+	context.JSON(200, <-s.getRepository)
 }
 
 func (s *SimulationManager) GetTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
 	repo := <-s.getRepository
-
-	if err := repo.UpdateTopology(); err != nil {
-		context.JSON(500, err)
-		return
-	}
 
 	topo, err := repo.LoadTopology(topologyName)
 	if err != nil {

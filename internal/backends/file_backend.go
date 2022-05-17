@@ -67,9 +67,10 @@ func (t *TopologyRepository) SaveTopology(fileName string, graph *topology.Graph
 		return err
 	}
 
-	if err := os.WriteFile(configs.TopologyBaseDir+fileName, jsonTopology, 0644); err != nil {
+	if err := os.WriteFile(configs.TopologyBaseDir+fileName+jsonSuffix, jsonTopology, 0644); err != nil {
 		return err
 	}
+	t.Topologies = append(t.Topologies, fileName)
 
 	return nil
 }

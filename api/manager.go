@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/kpetremann/claw-network/internal/backends"
 )
 
@@ -17,6 +19,11 @@ func NewSimulationManager() *SimulationManager {
 
 	go func() {
 		var repository backends.TopologyRepository
+		fmt.Println("Loading repository")
+		if err := repository.UpdateTopology(); err != nil {
+			panic(err)
+		}
+
 		for {
 			select {
 			case s.getRepository <- repository:
