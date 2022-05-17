@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kpetremann/claw-network/internal/backends"
 	"github.com/kpetremann/claw-network/pkg/simulations"
 	"github.com/kpetremann/claw-network/pkg/topology"
 
@@ -30,7 +29,27 @@ func runAllScenarios(graph *topology.Graph) (map[string]interface{}, error) {
 	return result, err
 }
 
-func SimulateDownImpactProvidedTopology(context *gin.Context) {
+func (s *SimulationManager) SimulateDownImpactExistingTopology(context *gin.Context) {
+	topologyName := context.Param("topology")
+	repo := <-s.getRepository
+
+	graph, err := repo.LoadTopology(topologyName)
+
+	if err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	result, err := runAllScenarios(graph)
+	if err != nil {
+		context.JSON(500, err)
+		return
+	}
+
+	context.JSON(200, result)
+}
+
+func (s *SimulationManager) SimulateDownImpactProvidedTopology(context *gin.Context) {
 	var graph topology.Graph
 	err := context.ShouldBind(&graph)
 	if err != nil {
@@ -47,28 +66,9 @@ func SimulateDownImpactProvidedTopology(context *gin.Context) {
 	context.JSON(200, result)
 }
 
-func SimulateDownImpactExistingTopology(context *gin.Context) {
-	var repo backends.TopologyRepository
+func (s *SimulationManager) AddTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
-	graph, err := repo.LoadTopology(topologyName + ".json")
 
-	if err != nil {
-		context.JSON(500, err)
-		return
-	}
-
-	result, err := runAllScenarios(graph)
-	if err != nil {
-		context.JSON(500, err)
-		return
-	}
-
-	context.JSON(200, result)
-}
-
-func AddTopology(context *gin.Context) {
-	topologyName := context.Param("topology")
-	var repo backends.TopologyRepository
 	var graph topology.Graph
 	err := context.ShouldBind(&graph)
 
@@ -77,6 +77,7 @@ func AddTopology(context *gin.Context) {
 		return
 	}
 
+	repo := <-s.getRepository
 	if err := repo.SaveTopology(topologyName+".json", &graph); err != nil {
 		context.JSON(500, err)
 		return
@@ -85,8 +86,9 @@ func AddTopology(context *gin.Context) {
 	context.JSON(200, "topology saved")
 }
 
-func ListTopology(context *gin.Context) {
-	var repo backends.TopologyRepository
+func (s *SimulationManager) ListTopology(context *gin.Context) {
+	repo := <-s.getRepository
+
 	if err := repo.UpdateTopology(); err != nil {
 		context.JSON(500, err)
 		return
@@ -95,13 +97,13 @@ func ListTopology(context *gin.Context) {
 	context.JSON(200, repo)
 }
 
-func GetTopology(context *gin.Context) {
+func (s *SimulationManager) GetTopology(context *gin.Context) {
 	context.JSON(200, "not implemented yet")
 }
 
-func DeleteTopology(context *gin.Context) {
+func (s *SimulationManager) DeleteTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
-	var repo backends.TopologyRepository
+	repo := <-s.getRepository
 
 	if err := repo.DeleteTopology(topologyName); err != nil {
 		context.JSON(500, err)

@@ -48,7 +48,8 @@ func (t *TopologyRepository) DeleteTopology(topologyName string) error {
 
 func (t *TopologyRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
-	byteValue, err := os.ReadFile(configs.TopologyBaseDir + topologyFile)
+	// TODO: check if in repository before trying to read file
+	byteValue, err := os.ReadFile(configs.TopologyBaseDir + topologyFile + jsonSuffix)
 	if err != nil {
 		return nil, err
 	}

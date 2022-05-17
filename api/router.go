@@ -8,15 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// https://github.com/eliben/code-for-blog/blob/master/2019/gohttpconcurrency/channel-manager-server.go
+
 func ListenAndServer() {
 	router := gin.Default()
+	s := NewSimulationManager()
 
-	router.GET("/topology", ListTopology)
+	router.GET("/topology", s.ListTopology)
 
-	router.POST("/topology/:topology", AddTopology)
-	router.DELETE("/topology/:topology", DeleteTopology)
-	router.POST("/topology/custom/device/every/down/impact", SimulateDownImpactProvidedTopology)
-	router.GET("/topology/:topology/device/every/down/impact", SimulateDownImpactExistingTopology)
+	router.POST("/topology/:topology", s.AddTopology)
+	router.DELETE("/topology/:topology", s.DeleteTopology)
+	router.POST("/topology/custom/device/each/down/impact", s.SimulateDownImpactProvidedTopology)
+	router.GET("/topology/:topology/device/each/down/impact", s.SimulateDownImpactExistingTopology)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
