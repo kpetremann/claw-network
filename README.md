@@ -13,7 +13,8 @@ It has been specially crafted for Clos Matrix network.
 ```
 Important notice:
 
-This is in development and not fully usable yet. But you can play with it :)
+This is in development and not fully usable yet.
+But you can play with it :)
 ```
 
 # Usage
