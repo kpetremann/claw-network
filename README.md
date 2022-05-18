@@ -1,10 +1,10 @@
-# ClawNetwork
+<img align="right" width="320px" src="https://raw.githubusercontent.com/kpetremann/claw-network/logo/img/ClawNetwork-logo.png" />
 
 ![status](https://img.shields.io/badge/status-in%20development-orange)
 ![Go](https://img.shields.io/github/go-mod/go-version/kpetremann/claw-network)
 ![GitHub](https://img.shields.io/github/license/kpetremann/claw-network)
 
-## Overview
+# Overview
 
 ClawNetwork is a tool to simulate a network and evaluate failures impacts on Top of Racks.
 
@@ -16,9 +16,9 @@ Important notice:
 This is in development and not fully usable yet. But you can play with it :)
 ```
 
-## Usage
+# Usage
 
-### Quickstart
+## Quickstart
 
 Simply run ClawNetwork app using `go run .`
 
@@ -40,7 +40,7 @@ It will run a simulation on a stored topology.
 
 If `:device` is set to `each`, it will simulate failure impact of each devices excluding Top of Racks.
 
-#### Example
+### Example
 
 Topology = 4 healthy fabric nodes + 4 healthy ToR
 
@@ -49,7 +49,7 @@ Simulations:
 - second simulation considering second fabric node as down but with the first up
 - ...
 
-## Example usecase
+# Example usecase
 
 You can query the following endpoint to simulate down impact of each devices. It get the tppology example from the `example/full_topology_with_issues.json`.
 
@@ -74,7 +74,7 @@ The topology defined in `example/full_topology_with_issues.json`, also specifies
 
 Note: more advanced examples will be provided soon, with more complex scenarios.
 
-## Todo / coming features
+# Todo / coming features
 
 - add tests
 - return better errors to the user
