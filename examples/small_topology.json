@@ -1,0 +1,120 @@
+{
+  "nodes": [
+    {
+      "hostname": "tor-01-01",
+      "role": "tor",
+      "status": true,
+      "layer": 1
+    },
+    {
+      "hostname": "fabric-1-01",
+      "role": "fabric",
+      "status": true,
+      "layer": 2
+    },
+    {
+      "hostname": "fabric-2-01",
+      "role": "fabric",
+      "status": true,
+      "layer": 2
+    },
+    {
+      "hostname": "tor-01-02",
+      "role": "tor",
+      "status": true,
+      "layer": 1
+    },
+    {
+      "hostname": "fabric-1-02",
+      "role": "fabric",
+      "status": true,
+      "layer": 2
+    },
+    {
+      "hostname": "fabric-2-02",
+      "role": "fabric",
+      "status": true,
+      "layer": 2
+    },
+    {
+      "hostname": "spine-11",
+      "role": "spine",
+      "status": true,
+      "layer": 3
+    },
+    {
+      "hostname": "spine-12",
+      "role": "spine",
+      "status": true,
+      "layer": 3
+    },
+    {
+      "hostname": "edge-1",
+      "role": "edge",
+      "status": true,
+      "layer": 4
+    }
+  ],
+  "links": [
+    {
+      "south_node": "tor-01-01",
+      "north_node": "fabric-1-01",
+      "status": true,
+      "uid": "10.0.0.0->10.0.0.1"
+    },
+    {
+      "south_node": "tor-01-01",
+      "north_node": "fabric-2-01",
+      "status": true,
+      "uid": "10.0.0.2->10.0.0.3"
+    },
+    {
+      "south_node": "fabric-1-01",
+      "north_node": "spine-11",
+      "status": true,
+      "uid": "10.0.0.4->10.0.0.5"
+    },
+    {
+      "south_node": "fabric-1-01",
+      "north_node": "spine-12",
+      "status": true,
+      "uid": "10.0.0.6->10.0.0.7"
+    },
+    {
+      "south_node": "tor-01-02",
+      "north_node": "fabric-1-02",
+      "status": true,
+      "uid": "10.0.0.8->10.0.0.9"
+    },
+    {
+      "south_node": "tor-01-02",
+      "north_node": "fabric-2-02",
+      "status": true,
+      "uid": "10.0.0.10->10.0.0.11"
+    },
+    {
+      "south_node": "fabric-1-02",
+      "north_node": "spine-11",
+      "status": true,
+      "uid": "10.0.0.12->10.0.0.13"
+    },
+    {
+      "south_node": "fabric-1-02",
+      "north_node": "spine-12",
+      "status": true,
+      "uid": "10.0.0.14->10.0.0.15"
+    },
+    {
+      "south_node": "spine-11",
+      "north_node": "edge-1",
+      "status": true,
+      "uid": "10.0.0.16->10.0.0.17"
+    },
+    {
+      "south_node": "spine-12",
+      "north_node": "edge-1",
+      "status": true,
+      "uid": "10.0.0.18->10.0.0.19"
+    }
+  ]
+}

@@ -52,20 +52,20 @@ def create_all_nodes() -> list[dict]:
             nodes.append(node)
 
         # fabric
-        for j in range(1, 5):
+        for j in range(1, 3):
             hostname = f"fabric-{j}-{i:02d}"
             node = create_node(hostname, "fabric", 2)
             nodes.append(node)
 
     # spine
-    for i in range(1, 5):
-        for j in range(1, 5):
+    for i in range(1, 2):
+        for j in range(1, 3):
             hostname = f"spine-{i}{j}"
             node = create_node(hostname, "spine", 3)
             nodes.append(node)
 
     # edges
-    for i in range(2):
+    for i in range(1, 2):
         node = create_node(f"edge-{i}", "edge", 4)
         nodes.append(node)
 
@@ -87,20 +87,13 @@ def create_all_links(nodes: dict) -> list[dict]:
                 pod = south["hostname"][-2:]
                 if north["hostname"].endswith(f"-{pod}"):
                     links.append(create_link(south, north))
-                    links.append(create_link(south, north))
 
             if south["role"] == "fabric":
                 plane = south["hostname"][-4]
                 if north["hostname"][-2] == plane:
                     links.append(create_link(south, north))
-                    links.append(create_link(south, north))
-                    links.append(create_link(south, north))
-                    links.append(create_link(south, north))
 
             if south["role"] == "spine":
-                links.append(create_link(south, north))
-                links.append(create_link(south, north))
-                links.append(create_link(south, north))
                 links.append(create_link(south, north))
 
     return links

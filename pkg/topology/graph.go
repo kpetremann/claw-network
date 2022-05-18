@@ -95,7 +95,7 @@ func (g *Graph) AddLink(linkDef *LinkDefinition) error {
 	return nil
 }
 
-func (g *Graph) ConnectNodeToLinks() {
+func (g *Graph) ConnectNodesToLinks() {
 	for _, link := range g.Links {
 		link.SouthNode.Uplinks[link.Uid] = link
 	}
@@ -143,7 +143,7 @@ func (g *Graph) ComputeAllLinkStatus() {
 	}
 }
 
-func (g *Graph) GetIsolatedBottomNode() ([]string, error) {
+func (g *Graph) GetIsolatedBottomNodes() ([]string, error) {
 	var BottomNode []string
 	for _, tor := range g.BottomNode {
 		isIsolated, err := tor.IsIsolated()

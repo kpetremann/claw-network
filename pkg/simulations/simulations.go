@@ -17,7 +17,7 @@ func AssetsDown(graph *topology.Graph, devicesDown []string, linksDown []string)
 	defer graph.FullReset()
 	graph.ComputeAllLinkStatus()
 
-	isolated, err := graph.GetIsolatedBottomNode()
+	isolated, err := graph.GetIsolatedBottomNodes()
 	if err != nil {
 		return nil, err
 	}
