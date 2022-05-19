@@ -9,7 +9,16 @@ from ipaddress import ip_network
 from typing import Generator
 
 PODS = 2
+
 RACKS_PER_POD = 2
+FABRICS_PER_POD = 2
+SPINES_PLANE = 2
+SPINES_PER_PLANE = 2
+EDGES = 2
+
+RACK_LINKS_PER_FABRIC = 2
+FABRIC_LINKS_PER_SPINE = 2
+SPINE_LINKS_PER_EDGE = 2
 
 
 def _gen_interco() -> Generator:
@@ -46,26 +55,26 @@ def create_all_nodes() -> list[dict]:
     nodes = []
     for i in range(1, PODS + 1):
         # ToR
-        for j in range(1, RACKS_PER_POD):
+        for j in range(1, RACKS_PER_POD + 1):
             hostname = f"tor-{j:02d}-{i:02d}"
             node = create_node(hostname, "tor", 1)
             nodes.append(node)
 
         # fabric
-        for j in range(1, 3):
+        for j in range(1, FABRICS_PER_POD + 1):
             hostname = f"fabric-{j}-{i:02d}"
             node = create_node(hostname, "fabric", 2)
             nodes.append(node)
 
     # spine
-    for i in range(1, 2):
-        for j in range(1, 3):
+    for i in range(1, SPINES_PLANE + 1):
+        for j in range(1, SPINES_PER_PLANE + 1):
             hostname = f"spine-{i}{j}"
             node = create_node(hostname, "spine", 3)
             nodes.append(node)
 
     # edges
-    for i in range(1, 2):
+    for i in range(1, EDGES + 1):
         node = create_node(f"edge-{i}", "edge", 4)
         nodes.append(node)
 
@@ -86,15 +95,18 @@ def create_all_links(nodes: dict) -> list[dict]:
             if south["role"] == "tor":
                 pod = south["hostname"][-2:]
                 if north["hostname"].endswith(f"-{pod}"):
-                    links.append(create_link(south, north))
+                    for _ in range(RACK_LINKS_PER_FABRIC):
+                        links.append(create_link(south, north))
 
             if south["role"] == "fabric":
                 plane = south["hostname"][-4]
                 if north["hostname"][-2] == plane:
-                    links.append(create_link(south, north))
+                    for _ in range(FABRIC_LINKS_PER_SPINE):
+                        links.append(create_link(south, north))
 
             if south["role"] == "spine":
-                links.append(create_link(south, north))
+                for _ in range(SPINE_LINKS_PER_EDGE):
+                    links.append(create_link(south, north))
 
     return links
 

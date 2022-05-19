@@ -19,3 +19,7 @@ vendor/
 
 # tagged file
 *.ignore
+
+# artifacts
+topology.json
+claw-network
