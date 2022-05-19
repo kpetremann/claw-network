@@ -1,65 +1,56 @@
 package api
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/kpetremann/claw-network/pkg/simulations"
 	"github.com/kpetremann/claw-network/pkg/topology"
 
 	"github.com/gin-gonic/gin"
 )
 
-func runAllScenarios(graph *topology.Graph) (map[string]interface{}, error) {
-	start := time.Now()
-	scenarios, err := simulations.RunAllNodesScenarios(graph)
-	if err != nil {
-		return nil, err
-	}
-
-	t := time.Now()
-	elapsed := t.Sub(start)
-
-	msg := fmt.Sprintf("took %d ms", elapsed.Milliseconds())
-
-	result := make(map[string]interface{})
-	result["performance"] = msg
-	result["impact_simulation"] = scenarios
-
-	return result, err
-}
-
 func (s *SimulationManager) SimulateDownImpactExistingTopology(context *gin.Context) {
+	var err error
 	topologyName := context.Param("topology")
+	deviceDown := context.Param("device")
+
 	repo := <-s.getRepository
 
 	graph, err := repo.LoadTopology(topologyName)
-
 	if err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := runAllScenarios(graph)
+	var result *simulations.SimulationResult
+	if deviceDown == "each" {
+		result, err = simulations.RunAllNodesScenarios(graph)
+	} else {
+		result, err = simulations.RunWithAssetsDown(graph, []string{deviceDown}, nil)
+	}
+
 	if err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(200, result)
+	context.PureJSON(200, result)
 }
 
 func (s *SimulationManager) SimulateDownImpactProvidedTopology(context *gin.Context) {
-	var graph topology.Graph
-	err := context.ShouldBind(&graph)
+	var scenarioParameters struct {
+		graph       topology.Graph
+		downDevices []string
+		downLinks   []string
+	}
+
+	err := context.ShouldBind(&scenarioParameters)
 	if err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := runAllScenarios(&graph)
+	result, err := simulations.RunAllNodesScenarios(&scenarioParameters.graph)
 	if err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -70,22 +61,20 @@ func (s *SimulationManager) AddTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
 
 	var graph topology.Graph
-	err := context.ShouldBind(&graph)
-
-	if err != nil {
-		context.JSON(500, err)
+	if err := context.ShouldBind(&graph); err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
 	repo := <-s.getRepository
 	if err := repo.SaveTopology(topologyName, &graph); err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
 	s.writeRepository <- repo.Topologies
 
-	context.JSON(200, "topology saved")
+	context.JSON(200, gin.H{"result": "topology saved"})
 }
 
 func (s *SimulationManager) ListTopology(context *gin.Context) {
@@ -98,7 +87,7 @@ func (s *SimulationManager) GetTopology(context *gin.Context) {
 
 	topo, err := repo.LoadTopology(topologyName)
 	if err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -110,9 +99,9 @@ func (s *SimulationManager) DeleteTopology(context *gin.Context) {
 	repo := <-s.getRepository
 
 	if err := repo.DeleteTopology(topologyName); err != nil {
-		context.JSON(500, err)
+		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(200, "deleted")
+	context.JSON(200, gin.H{"result": "deleted"})
 }

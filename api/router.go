@@ -19,8 +19,8 @@ func ListenAndServer() {
 	router.GET("/topology/:topology", s.GetTopology)
 	router.POST("/topology/:topology", s.AddTopology)
 	router.DELETE("/topology/:topology", s.DeleteTopology)
-	router.POST("/topology/custom/device/each/down/impact", s.SimulateDownImpactProvidedTopology)
-	router.GET("/topology/:topology/device/each/down/impact", s.SimulateDownImpactExistingTopology)
+	router.POST("/topology/custom/device/:device/down/impact", s.SimulateDownImpactProvidedTopology)
+	router.GET("/topology/:topology/device/:device/down/impact", s.SimulateDownImpactExistingTopology)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})

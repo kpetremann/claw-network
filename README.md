@@ -105,15 +105,38 @@ You can query the following endpoint to simulate down impact of each devices. It
 ```shell
 $ curl http://127.0.0.1:8080/topology/full_topology_with_issues/device/each/down/impact | jq
 {
-    "impact_simulation": {
-        "edge-0": null,
-        "edge-1": null,
-        "fabric-1-01": [
-            "tor-01-01"
+  "scenarios_result": {
+    "edge-0": {
+      "impacts": null,
+      "parameters": {
+        "devices_down": [
+          "edge-0"
         ],
-        "fabric-1-02": null,
-        ...
-    }
+        "links_down": null
+      }
+    },
+    "edge-1": {
+      "impacts": null,
+      "parameters": {
+        "devices_down": [
+          "edge-1"
+        ],
+        "links_down": null
+      }
+    },
+    "fabric-1-01": {
+      "impacts": [
+        "tor-01-01"
+      ],
+      "parameters": {
+        "devices_down": [
+          "fabric-1-01"
+        ],
+        "links_down": null
+      }
+    },
+    ...,
+    "compute_time": "89 ms"
 }
 ```
 
