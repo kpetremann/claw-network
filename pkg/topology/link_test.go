@@ -16,13 +16,13 @@ func TestLinkUnmarshalJSON(t *testing.T) {
 
 func TestLinkMarshalJSON(t *testing.T) {
 	link := LinkDefinition{
-		Uid:               "tor1->spine1",
+		Uid:               "tor1-spine1",
 		SouthNodeHostname: "tor-01-01",
 		NorthNodeHostname: "spine-01-01",
 		Status:            true,
 	}
 
-	expectedJSON := []byte(`{"uid":"tor1->spine1","south_node":"tor-01-01","north_node":"spine-01-01","status":true}`)
+	expectedJSON := []byte(`{"uid":"tor1-spine1","south_node":"tor-01-01","north_node":"spine-01-01","status":true}`)
 	jsonLink, err := json.Marshal(link)
 	if err != nil {
 		t.Errorf("Marshal failure: %s", err)
