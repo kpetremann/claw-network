@@ -54,12 +54,12 @@ func TestNodeIsIsolated(t *testing.T) {
 		"spine2": {CanReachEdge: false},
 	}
 
-	if isolated, _ := node.IsIsolated(); isolated != true {
+	if isolated, _ := node.IsIsolated(); isolated == false {
 		t.Error("Did not detect isolated node")
 	}
 
 	node.Uplinks["spine1"].CanReachEdge = true
-	if isolated, _ := node.IsIsolated(); isolated != false {
+	if isolated, _ := node.IsIsolated(); isolated == true {
 		t.Error("Node should not be considered isolated")
 	}
 }

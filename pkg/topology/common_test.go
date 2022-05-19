@@ -8,9 +8,9 @@ func GenerateMinimumGraph() *Graph {
 		"edge1":  {Hostname: "edge1", Layer: 3, Role: "edge", Uplinks: map[string]*Link{}, Status: true, RealStatus: true},
 	}
 	links := map[string]*Link{
-		"1": {Uid: "1", SouthNode: nodes["tor1"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
-		"2": {Uid: "2", SouthNode: nodes["tor2"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
-		"3": {Uid: "3", SouthNode: nodes["spine1"], NorthNode: nodes["edge1"], Status: true, RealStatus: true},
+		"tor1->spine1":  {Uid: "1", SouthNode: nodes["tor1"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
+		"tor2->spine1":  {Uid: "2", SouthNode: nodes["tor2"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
+		"spine1->edge1": {Uid: "3", SouthNode: nodes["spine1"], NorthNode: nodes["edge1"], Status: true, RealStatus: true},
 	}
 
 	graph := Graph{

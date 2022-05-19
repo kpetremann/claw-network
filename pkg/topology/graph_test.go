@@ -79,7 +79,7 @@ func TestGraphUnmarshalJSON(t *testing.T) {
 }
 
 func TestGraphMarshalJSON(t *testing.T) {
-	expectedJSON := "{\"BuildId\":0,\"Links\":{\"1\":{\"uid\":\"1\",\"south_node\":\"tor1\",\"north_node\":\"tor1\",\"status\":false},\"2\":{\"uid\":\"2\",\"south_node\":\"tor1\",\"north_node\":\"tor1\",\"status\":false}},\"Nodes\":{\"spine1\":{\"hostname\":\"tor1\",\"layer\":2,\"role\":\"spine\",\"status\":false},\"tor1\":{\"hostname\":\"tor1\",\"layer\":1,\"role\":\"tor\",\"status\":false},\"tor2\":{\"hostname\":\"tor1\",\"layer\":1,\"role\":\"tor\",\"status\":false}},\"BottomNode\":null}"
+	expectedJSON := []byte(`{"BuildId":0,"Links":{"1":{"uid":"1","south_node":"tor1","north_node":"tor1","status":false},"2":{"uid":"2","south_node":"tor1","north_node":"tor1","status":false}},"Nodes":{"spine1":{"hostname":"tor1","layer":2,"role":"spine","status":false},"tor1":{"hostname":"tor1","layer":1,"role":"tor","status":false},"tor2":{"hostname":"tor1","layer":1,"role":"tor","status":false}},"BottomNode":null}`)
 	nodes := map[string]*Node{
 		"tor1":   {Hostname: "tor1", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}},
 		"tor2":   {Hostname: "tor1", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}},
@@ -100,8 +100,8 @@ func TestGraphMarshalJSON(t *testing.T) {
 		t.Errorf("Error while trying to marshal the Graph: %s", err)
 	}
 
-	if string(graphBytes) != expectedJSON {
-		t.Errorf("Bad JSON result: %s", graphBytes)
+	if string(graphBytes) != string(expectedJSON) {
+		t.Errorf("Bad JSON result: %s != %s", graphBytes, expectedJSON)
 	}
 }
 
@@ -159,7 +159,7 @@ func TestGraphComputeAllLinkStatus(t *testing.T) {
 func TestGraphFullReset(t *testing.T) {
 	graph := GenerateMinimumGraph()
 	graph.Nodes["tor1"].Status = false
-	graph.Links["1"].Status = false
+	graph.Links["tor1->spine1"].Status = false
 
 	graph.FullReset()
 
@@ -167,7 +167,7 @@ func TestGraphFullReset(t *testing.T) {
 		t.Error("Failed to reset node status")
 	}
 
-	if graph.Links["1"].Status == false && graph.Links["1"].Status != graph.Links["1"].RealStatus {
+	if graph.Links["tor1->spine1"].Status == false && graph.Links["tor1->spine1"].Status != graph.Links["tor1->spine1"].RealStatus {
 		t.Error("Failed to reset link status")
 	}
 }
