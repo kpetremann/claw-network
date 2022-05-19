@@ -6,26 +6,6 @@ import (
 	"testing"
 )
 
-func generateMinimumGraph() *Graph {
-	nodes := map[string]*Node{
-		"tor1":   {Hostname: "tor1", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}, Status: true, RealStatus: true},
-		"tor2":   {Hostname: "tor2", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}, Status: true, RealStatus: true},
-		"spine1": {Hostname: "spine1", Layer: 2, Role: "spine", Uplinks: map[string]*Link{}, Status: true, RealStatus: true},
-	}
-	links := map[string]*Link{
-		"1": {Uid: "1", SouthNode: nodes["tor1"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
-		"2": {Uid: "2", SouthNode: nodes["tor2"], NorthNode: nodes["spine1"], Status: true, RealStatus: true},
-	}
-
-	graph := Graph{
-		Nodes:      nodes,
-		Links:      links,
-		BottomNode: []*Node{nodes["tor1"], nodes["tor2"]},
-	}
-
-	return &graph
-}
-
 func TestGraphUnmarshalJSON(t *testing.T) {
 	expectedNodesNumber := 9
 	expectedLinksNumber := 10
@@ -98,27 +78,7 @@ func TestGraphUnmarshalJSON(t *testing.T) {
 	}
 }
 
-func TestAddLink(t *testing.T) {
-	graph := generateMinimumGraph()
-	graph.Links = make(map[string]*Link) // removing links for the tests
-
-	// Horizontal links are not supported
-	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "tor1", NorthNodeHostname: "tor2"}); err == nil {
-		t.Error("Horizontal links should not be permitted")
-	}
-
-	// Downlinks are not supported
-	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "spine1", NorthNodeHostname: "tor1"}); err == nil {
-		t.Error("Horizontal links should not be permitted")
-	}
-
-	// Uplinks are supported
-	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "tor1", NorthNodeHostname: "spine1"}); err != nil {
-		t.Error("Unable to add an uplink")
-	}
-}
-
-func TestMarshalJSON(t *testing.T) {
+func TestGraphMarshalJSON(t *testing.T) {
 	expectedJSON := "{\"BuildId\":0,\"Links\":{\"1\":{\"uid\":\"1\",\"south_node\":\"tor1\",\"north_node\":\"tor1\",\"status\":false},\"2\":{\"uid\":\"2\",\"south_node\":\"tor1\",\"north_node\":\"tor1\",\"status\":false}},\"Nodes\":{\"spine1\":{\"hostname\":\"tor1\",\"layer\":2,\"role\":\"spine\",\"status\":false},\"tor1\":{\"hostname\":\"tor1\",\"layer\":1,\"role\":\"tor\",\"status\":false},\"tor2\":{\"hostname\":\"tor1\",\"layer\":1,\"role\":\"tor\",\"status\":false}},\"BottomNode\":null}"
 	nodes := map[string]*Node{
 		"tor1":   {Hostname: "tor1", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}},
@@ -145,8 +105,8 @@ func TestMarshalJSON(t *testing.T) {
 	}
 }
 
-func TestMarshalAndUnmarshal(t *testing.T) {
-	graph := generateMinimumGraph()
+func TestGraphMarshalAndUnmarshal(t *testing.T) {
+	graph := GenerateMinimumGraph()
 	graphBytes, err := json.Marshal(graph)
 	if err != nil {
 		t.Errorf("Error while trying to marshal the Graph: %s", err)
@@ -158,29 +118,28 @@ func TestMarshalAndUnmarshal(t *testing.T) {
 	}
 }
 
-// This test will be possible once `configs.TopDeviceRole` is configurable
-// func TestGetIsolatedBottomNodes(t *testing.T) {
-// 	graph := generateMinimumGraph()
-// 	graph.ConnectNodesToLinks()
+func TestGraphAddLink(t *testing.T) {
+	graph := GenerateMinimumGraph()
+	graph.Links = make(map[string]*Link) // removing links for the tests
 
-// 	if nodes, _ := graph.GetIsolatedBottomNodes(); len(nodes) != 0 {
-// 		t.Error("There should be no isolated nodes")
-// 	}
+	// Horizontal links are not supported
+	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "tor1", NorthNodeHostname: "tor2"}); err == nil {
+		t.Error("Horizontal links should not be permitted")
+	}
 
-// 	graph.Links["1"].CanReachEdge = false
-// 	if nodes, _ := graph.GetIsolatedBottomNodes(); len(nodes) != 1 && nodes[0] != "tor1" {
-// 		t.Error("Only ToR 1 should be isolated")
-// 	}
+	// Downlinks are not supported
+	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "spine1", NorthNodeHostname: "tor1"}); err == nil {
+		t.Error("Horizontal links should not be permitted")
+	}
 
-// 	graph.Links["2"].CanReachEdge = false
-// 	if nodes, _ := graph.GetIsolatedBottomNodes(); len(nodes) != 2 && nodes[0] != "tor1" && nodes[1] != "tor2" {
-// 		t.Error("Only ToR nodes should be isolated")
-// 	}
-// }
+	// Uplinks are supported
+	if err := graph.AddLink(&LinkDefinition{Uid: "1", SouthNodeHostname: "tor1", NorthNodeHostname: "spine1"}); err != nil {
+		t.Error("Unable to add an uplink")
+	}
+}
 
-// This test assume all links and nodes are healthy
-func TestComputeAllLinkStatus(t *testing.T) {
-	graph := generateMinimumGraph()
+func TestGraphComputeAllLinkStatus(t *testing.T) {
+	graph := GenerateMinimumGraph()
 	graph.ConnectNodesToLinks()
 
 	graph.ComputeAllLinkStatus()
@@ -197,8 +156,8 @@ func TestComputeAllLinkStatus(t *testing.T) {
 	}
 }
 
-func TestFullReset(t *testing.T) {
-	graph := generateMinimumGraph()
+func TestGraphFullReset(t *testing.T) {
+	graph := GenerateMinimumGraph()
 	graph.Nodes["tor1"].Status = false
 	graph.Links["1"].Status = false
 
