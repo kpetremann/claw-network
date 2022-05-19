@@ -60,7 +60,7 @@ If `:device` is set to `each`, it will simulate failure impact of each devices e
 
 The topology to provide looks like this in JSON:
 
-```
+```json
 {
   "nodes": [
     {
@@ -102,8 +102,8 @@ Simulations:
 
 You can query the following endpoint to simulate down impact of each devices. It get the tppology example from the `example/full_topology_with_issues.json`.
 
-```
-curl http://127.0.0.1:8080/topology/full_topology_with_issues/device/each/down/impact | jq
+```shell
+$ curl http://127.0.0.1:8080/topology/full_topology_with_issues/device/each/down/impact | jq
 {
     "impact_simulation": {
         "edge-0": null,
