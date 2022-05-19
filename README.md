@@ -125,17 +125,4 @@ Note: more advanced examples will be provided soon, with more complex scenarios.
 
 # Todo / coming features
 
-- add tests
-- return better errors to the user
-- simulate impact of link shutdown
-- simulate impact of multiple shutdown
-- statistics: nodes, links, down/up, nomber of node which can reach edge
-- store topologies in: JSON / redis / memory
-    > can be one mode only, or memory + another method
-- anomalies detection
-- authentication
-- support east horizontal links
-- caching with cache-control
-- provide an UI
-- UI: provide a diagram of a node
-- UI: provide a diagram of a node paths to edges
+See [Project board](https://github.com/kpetremann/claw-network/projects/1)
