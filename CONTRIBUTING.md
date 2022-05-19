@@ -2,8 +2,8 @@
 
 At the moment, this project is under **active development**.
 
-I uses this project to play and continue learning and Golang, and preparing it for production.
+While I am working on making ClawNetwork ready for production, this project is the opportunity for me to play with Golang and keep learning it.
 
-While any contribution is welcome, please create an Issue in GitHub before creating any Pull Request.
+Any contribution is welcome but please create an issue in GitHub first.
 
 Thanks :)
