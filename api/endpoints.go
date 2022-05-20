@@ -7,10 +7,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *SimulationManager) SimulateDownImpactExistingTopology(context *gin.Context) {
+func (s *SimulationManager) RunOnExistingTopology(context *gin.Context) {
 	var err error
+
 	topologyName := context.Param("topology")
 	deviceDown := context.Param("device")
+	linkDown := context.Param("link")
 
 	repo := <-s.getRepository
 
@@ -24,7 +26,7 @@ func (s *SimulationManager) SimulateDownImpactExistingTopology(context *gin.Cont
 	if deviceDown == "each" {
 		result, err = simulations.RunAllNodesScenarios(graph)
 	} else {
-		result, err = simulations.RunWithAssetsDown(graph, []string{deviceDown}, nil)
+		result, err = simulations.RunWithAssetsDown(graph, []string{deviceDown}, []string{linkDown})
 	}
 
 	if err != nil {
@@ -32,23 +34,30 @@ func (s *SimulationManager) SimulateDownImpactExistingTopology(context *gin.Cont
 		return
 	}
 
-	context.PureJSON(200, result)
+	context.JSON(200, result)
 }
 
-func (s *SimulationManager) SimulateDownImpactProvidedTopology(context *gin.Context) {
-	var scenarioParameters struct {
-		graph       topology.Graph
-		downDevices []string
-		downLinks   []string
+func (s *SimulationManager) RunOnProvidedTopology(context *gin.Context) {
+	var params struct {
+		Graph *topology.Graph `json:"topology"`
 	}
 
-	err := context.ShouldBind(&scenarioParameters)
+	err := context.ShouldBind(&params)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	result, err := simulations.RunAllNodesScenarios(&scenarioParameters.graph)
+	deviceDown := context.Param("device")
+	linkDown := context.Param("link")
+
+	var result *simulations.SimulationResult
+	switch {
+	case deviceDown == "each":
+		result, err = simulations.RunAllNodesScenarios(params.Graph)
+	default:
+		result, err = simulations.RunWithAssetsDown(params.Graph, []string{deviceDown}, []string{linkDown})
+	}
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return

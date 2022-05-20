@@ -22,11 +22,11 @@ func ListenAndServer() {
 
 	router.GET("/topology/:topology/anomalies", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
 
-	router.POST("/topology/custom/device/:device/down/impact", s.SimulateDownImpactProvidedTopology)
-	router.GET("/topology/:topology/device/:device/down/impact", s.SimulateDownImpactExistingTopology)
+	router.POST("/topology/custom/device/:device/down/impact", s.RunOnProvidedTopology)
+	router.GET("/topology/:topology/device/:device/down/impact", s.RunOnExistingTopology)
 
-	router.POST("/topology/custom/link/:link/down/impact", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
-	router.GET("/topology/:topology/link/:link/down/impact", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
+	router.POST("/topology/custom/link/:link/down/impact", s.RunOnProvidedTopology)
+	router.GET("/topology/:topology/link/:link/down/impact", s.RunOnExistingTopology)
 
 	router.POST("/topology/:topology/scenario/impact", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
 
