@@ -89,6 +89,7 @@ func (g *Graph) AddLink(linkDef *LinkDefinition) error {
 
 	// connect node to links
 	link.SouthNode.Uplinks[linkDef.Uid] = &link
+	link.NorthNode.Downlinks[linkDef.Uid] = &link
 
 	g.Links[link.Uid] = &link
 
@@ -98,6 +99,7 @@ func (g *Graph) AddLink(linkDef *LinkDefinition) error {
 func (g *Graph) ConnectNodesToLinks() {
 	for _, link := range g.Links {
 		link.SouthNode.Uplinks[link.Uid] = link
+		link.NorthNode.Downlinks[link.Uid] = link
 	}
 }
 

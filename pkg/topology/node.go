@@ -10,6 +10,7 @@ import (
 type Node struct {
 	Hostname   string           `json:"hostname"`
 	Uplinks    map[string]*Link `json:"-"`
+	Downlinks  map[string]*Link `json:"-"`
 	Layer      int              `json:"layer"`
 	Role       string           `json:"role"`
 	Status     bool             `json:"status"`
@@ -27,6 +28,7 @@ func (n *Node) UnmarshalJSON(jsonText []byte) error {
 	*n = Node(tmp)
 
 	n.Uplinks = make(map[string]*Link)
+	n.Downlinks = make(map[string]*Link)
 	n.RealStatus = n.Status
 
 	return nil
