@@ -3,6 +3,7 @@ package topology
 import (
 	"encoding/json"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -169,5 +170,50 @@ func TestGraphFullReset(t *testing.T) {
 
 	if graph.Links["tor1->spine1"].Status == false && graph.Links["tor1->spine1"].Status != graph.Links["tor1->spine1"].RealStatus {
 		t.Error("Failed to reset link status")
+	}
+}
+
+func TestGraphGetAnomaliesOk(t *testing.T) {
+	graph := GenerateMinimumGraph()
+	graph.ConnectNodesToLinks()
+
+	anomalies := graph.GetAnomalies()
+
+	if len(anomalies) > 0 {
+		t.Error("There should be anomalies")
+	}
+
+}
+
+func TestGraphGetAnomaliesNok(t *testing.T) {
+	graph := GenerateMinimumGraph()
+	delete(graph.Links, "tor1->spine1")
+	delete(graph.Links, "spine1->edge1")
+
+	graph.ConnectNodesToLinks()
+	anomalies := graph.GetAnomalies()
+
+	if len(anomalies) == 0 {
+		t.Error("There should not be any anomaly")
+		return
+	}
+
+	expectedMessagesPerNode := map[string][]Anomaly{
+		"tor1":   {{Type: "not connected", Message: "no uplink"}},
+		"spine1": {{Type: "not connected", Message: "no uplink"}},
+		"edge1":  {{Type: "not connected", Message: "no downlink"}},
+	}
+
+	for _, a := range anomalies {
+		expectedMessages, ok := expectedMessagesPerNode[a.Node]
+
+		if !ok {
+			t.Errorf("%s is not supposed to have anomalies", a.Node)
+			continue
+		}
+
+		if !reflect.DeepEqual(a.Anomalies, expectedMessages) {
+			t.Errorf("Unexpected anomalies: %s != %s", a.Anomalies, expectedMessages)
+		}
 	}
 }

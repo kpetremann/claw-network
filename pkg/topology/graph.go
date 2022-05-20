@@ -159,6 +159,19 @@ func (g *Graph) GetIsolatedBottomNodes() ([]string, error) {
 	return BottomNode, nil
 }
 
+func (g *Graph) GetAnomalies() []*Anomalies {
+	var anomalies []*Anomalies
+	for _, node := range g.Nodes {
+		connected, issues := node.IsConnected()
+
+		if !connected {
+			anomalies = append(anomalies, &issues)
+		}
+	}
+
+	return anomalies
+}
+
 func (g *Graph) FullReset() {
 	for _, link := range g.Links {
 		link.ResetStatus()

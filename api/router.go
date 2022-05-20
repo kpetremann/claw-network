@@ -20,7 +20,7 @@ func ListenAndServer() {
 	router.POST("/topology/:topology", s.AddTopology)
 	router.DELETE("/topology/:topology", s.DeleteTopology)
 
-	router.GET("/topology/:topology/anomalies", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
+	router.GET("/topology/:topology/anomalies", s.GetAnomalies)
 
 	router.POST("/topology/custom/device/:device/down/impact", s.RunOnProvidedTopology)
 	router.GET("/topology/:topology/device/:device/down/impact", s.RunOnExistingTopology)

@@ -101,6 +101,20 @@ func (s *SimulationManager) RunScenario(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+func (s *SimulationManager) GetAnomalies(context *gin.Context) {
+	topologyName := context.Param("topology")
+	repo := <-s.getRepository
+
+	topo, err := repo.LoadTopology(topologyName)
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	anomalies := topo.GetAnomalies()
+	context.JSON(200, anomalies)
+}
+
 func (s *SimulationManager) AddTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
 

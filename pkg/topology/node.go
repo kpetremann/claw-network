@@ -67,16 +67,20 @@ func (n *Node) IsIsolatedFromTop() (bool, error) {
 // - a node is considered connected if it has at least one uplink and one downlink
 // - a bottom node is considered connected if it has at least one uplink
 // - a top node is considered connected if it has at least one downlink
-func (n *Node) IsConnected() (bool, error) {
-	if len(n.Uplinks) == 0 && len(n.Downlinks) == 0 {
-		return false, fmt.Errorf("no link found on %s", n.Hostname)
-	}
+func (n *Node) IsConnected() (bool, Anomalies) {
+	res := true
+	issues := Anomalies{Node: n.Hostname}
+
 	if n.Role != configs.TopDeviceRole && len(n.Uplinks) == 0 {
-		return false, fmt.Errorf("no uplink found on %s", n.Hostname)
+		res = false
+		anomaly := Anomaly{Type: "not connected", Message: "no uplink"}
+		issues.Anomalies = append(issues.Anomalies, anomaly)
 	}
 	if n.Role != configs.BottomDeviceRole && len(n.Downlinks) == 0 {
-		return false, fmt.Errorf("no downlink found on %s", n.Hostname)
+		res = false
+		anomaly := Anomaly{Type: "not connected", Message: "no downlink"}
+		issues.Anomalies = append(issues.Anomalies, anomaly)
 	}
 
-	return true, nil
+	return res, issues
 }
