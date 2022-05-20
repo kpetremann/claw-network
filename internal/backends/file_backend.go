@@ -43,6 +43,18 @@ func (t *TopologyRepository) DeleteTopology(topologyName string) error {
 		return err
 	}
 
+	// find element in the slice
+	var index int
+	for i, name := range t.Topologies {
+		if topologyName == name {
+			index = i
+			break
+		}
+	}
+
+	// delete the element
+	t.Topologies = append(t.Topologies[:index], t.Topologies[index+1:]...)
+
 	return nil
 }
 

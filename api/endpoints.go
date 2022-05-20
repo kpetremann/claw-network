@@ -147,5 +147,7 @@ func (s *SimulationManager) DeleteTopology(context *gin.Context) {
 		return
 	}
 
+	s.writeRepository <- repo.Topologies
+
 	context.JSON(200, gin.H{"result": "deleted"})
 }
