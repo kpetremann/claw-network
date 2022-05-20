@@ -66,6 +66,41 @@ func (s *SimulationManager) RunOnProvidedTopology(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+func (s *SimulationManager) RunScenario(context *gin.Context) {
+	var params struct {
+		Graph       interface{} `json:"topology"`
+		DevicesDown []string    `json:"devices_down"`
+		LinksDown   []string    `json:"links_down"`
+	}
+
+	err := context.ShouldBind(&params)
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	var graph *topology.Graph
+	switch params.Graph.(type) {
+	case *topology.Graph:
+		graph = params.Graph.(*topology.Graph)
+	case string:
+		repo := <-s.getRepository
+		graph, err = repo.LoadTopology(params.Graph.(string))
+		if err != nil {
+			context.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	result, err := simulations.RunWithAssetsDown(graph, params.DevicesDown, params.LinksDown)
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(200, result)
+}
+
 func (s *SimulationManager) AddTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
 
@@ -83,7 +118,7 @@ func (s *SimulationManager) AddTopology(context *gin.Context) {
 
 	s.writeRepository <- repo.Topologies
 
-	context.JSON(200, gin.H{"result": "topology saved"})
+	context.JSON(200, gin.H{"result": "saved"})
 }
 
 func (s *SimulationManager) ListTopology(context *gin.Context) {

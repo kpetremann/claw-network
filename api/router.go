@@ -28,7 +28,7 @@ func ListenAndServer() {
 	router.POST("/topology/custom/link/:link/down/impact", s.RunOnProvidedTopology)
 	router.GET("/topology/:topology/link/:link/down/impact", s.RunOnExistingTopology)
 
-	router.POST("/topology/:topology/scenario/impact", func(c *gin.Context) { c.JSON(501, gin.H{"error": "not implemented"}) })
+	router.POST("/topology/:topology/scenario/impact", s.RunScenario)
 
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
