@@ -44,7 +44,7 @@ func (n *Node) ComputeAllLinkStatus(buildId int) {
 	}
 }
 
-func (n *Node) IsIsolated() (bool, error) {
+func (n *Node) IsIsolatedFromTop() (bool, error) {
 	if n.Role == configs.TopDeviceRole {
 		return false, nil
 	}
@@ -58,6 +58,24 @@ func (n *Node) IsIsolated() (bool, error) {
 		if uplink.CanReachEdge {
 			return false, nil
 		}
+	}
+
+	return true, nil
+}
+
+// Tells if a node is connected to the graph, without considering link status
+// - a node is considered connected if it has at least one uplink and one downlink
+// - a bottom node is considered connected if it has at least one uplink
+// - a top node is considered connected if it has at least one downlink
+func (n *Node) IsConnected() (bool, error) {
+	if len(n.Uplinks) == 0 && len(n.Downlinks) == 0 {
+		return false, fmt.Errorf("no link found on %s", n.Hostname)
+	}
+	if n.Role != configs.TopDeviceRole && len(n.Uplinks) == 0 {
+		return false, fmt.Errorf("no uplink found on %s", n.Hostname)
+	}
+	if n.Role != configs.BottomDeviceRole && len(n.Downlinks) == 0 {
+		return false, fmt.Errorf("no downlink found on %s", n.Hostname)
 	}
 
 	return true, nil

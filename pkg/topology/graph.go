@@ -148,7 +148,7 @@ func (g *Graph) ComputeAllLinkStatus() {
 func (g *Graph) GetIsolatedBottomNodes() ([]string, error) {
 	var BottomNode []string
 	for _, tor := range g.BottomNode {
-		isIsolated, err := tor.IsIsolated()
+		isIsolated, err := tor.IsIsolatedFromTop()
 		if err != nil {
 			return nil, err
 		}
