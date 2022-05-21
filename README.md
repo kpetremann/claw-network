@@ -28,9 +28,7 @@ Concerned operations can be: upgrade, reboot, risky maintenance etc...
 
 ## Detect anomalies / SPOF
 
-ClawNetwork can be leveraged to detect SPOF of any anomalies.
-
-Anomaly detection is an upcoming feature: detect if a node has no uplinks, or if they are not connected to anything...
+ClawNetwork can be leveraged to detect SPOF of any anomalies such as spine without downlinks.
 
 # Usage
 
@@ -55,6 +53,23 @@ Alternative: build the binary via `go build` and run it.
 It will run a simulation on a stored topology.
 
 If `:device` is set to `each`, it will simulate failure impact of each devices excluding Top of Racks.
+
+### Anomaly detection
+
+- GET `/topology/:topology_name/anomalies`: get topology anomalies
+
+It list all anomalies in the topology graph.
+
+#### Link anomalies
+
+A node is not connected properly to the graph.
+
+For example:
+- a ToR does not have any uplinks
+- a spine does not have any downlinks or any uplinks
+- an edge does not have any downlinks
+
+This does not consider the status of the link, it only checks if there is a link.
 
 ### Topology structure
 
