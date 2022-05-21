@@ -36,5 +36,7 @@ func ListenAndServer() {
 
 	listenAddrPort := fmt.Sprintf("%s:%s", configs.ListenAddress, configs.ListenPort)
 
-	router.Run(listenAddrPort)
+	if err := router.Run(listenAddrPort); err != nil {
+		panic(err)
+	}
 }

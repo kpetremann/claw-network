@@ -1,10 +1,14 @@
 package topology
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestNodeUnmarshal(t *testing.T) {
 	var node Node
-	node.UnmarshalJSON([]byte(`{"hostname":"tor-01-01","role":"tor","layer":1,"status":true,"realStatus":true}`))
+	if err := node.UnmarshalJSON([]byte(`{"hostname":"tor-01-01","role":"tor","layer":1,"status":true,"realStatus":true}`)); err != nil {
+		t.Errorf("Test issues: unable to unmarshal the sample. %s", err)
+	}
 
 	if node.Hostname != "tor-01-01" {
 		t.Error("Unmarshal failure: bad hostname")
