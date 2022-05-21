@@ -8,8 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// https://github.com/eliben/code-for-blog/blob/master/2019/gohttpconcurrency/channel-manager-server.go
-
 func ListenAndServer() {
 	router := gin.Default()
 	s := NewSimulationManager()
