@@ -20,7 +20,7 @@ func NewSimulationManager() *SimulationManager {
 	go func() {
 		var repository backends.TopologyRepository
 		fmt.Println("Loading repository")
-		if err := repository.UpdateTopology(); err != nil {
+		if err := repository.RefreshRepository(); err != nil {
 			panic(err)
 		}
 

@@ -16,7 +16,8 @@ type TopologyRepository struct {
 	Topologies []string
 }
 
-func (t *TopologyRepository) UpdateTopology() error {
+// Get topology list from files
+func (t *TopologyRepository) RefreshRepository() error {
 	files, err := os.ReadDir(configs.TopologyBaseDir)
 	if err != nil {
 		return err
