@@ -196,6 +196,68 @@ The topology defined in `example/full_topology_with_issues.json`, also specifies
 
 Note: more advanced examples will be provided soon, with more complex scenarios.
 
+# Integrations
+
+Below some ideas of possible integrations:
+
+- the client push the topology with the simulation request. The topology is not stored.
+```
++-------------------------+
+|  Observability metrics  |
+|   example: Prometheus   |
++-------------------------+
+             ^
+             |
+             | get metrics
+             |
+             |
+             |
+ +-----------------------+
+ |                       |           get impact
+ |        Client         |        on custom topology        +---------------+
+ |   => convert metrics  |--------------------------------->|  ClawNetwork  |
+ |      to topology      |                                  +---------------+
+ +-----------------------+
+```
+
+- the client provides the topologies and they are stored
+```
++-------------------------+
+|  Observability metrics  |
+|   example: Prometheus   |
++-------------------------+
+             ^
+             |
+             | get metrics
+             |
+             |
+             |
+ +-----------------------+
+ |        Client         |       push topology      +---------------+      save topology       +-------------------------+
+ |   => convert metrics  |------------------------->|  ClawNetwork  |<------------------------>| Storage (FS, redis,...) |
+ |      to topology      |        get impact        +---------------+       get topology       +-------------------------+
+ +-----------------------+
+```
+
+- dedicated topology provider
+```
+                                                 +---------------------+
++-------------------------+                      |  Topology provider  |
+|  Observability metrics  | <------------------- | => convert metrics  |
++-------------------------+                      |    to topology      |
+                                                 +---------------------+
+                                                            |
+                                                            |
+                                                            | push topology
+                                                            |
+                                                            |
+                                                            |
+                                                            v
+ +-----------------------+        get impact        +---------------+      save topology       +-------------------------+
+ |        Client         |------------------------->|  ClawNetwork  |<------------------------>| Storage (FS, redis,...) |
+ +-----------------------+                          +---------------+       get topology       +-------------------------+
+```
+
 # Todo / coming features
 
 See [Project board](https://github.com/kpetremann/claw-network/projects/1)
