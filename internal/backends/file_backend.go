@@ -16,6 +16,10 @@ type TopologyRepository struct {
 	Topologies []string
 }
 
+func (r *TopologyRepository) GetTopologies() []string {
+	return r.Topologies
+}
+
 // Get topology list from files
 func (t *TopologyRepository) RefreshRepository() error {
 	files, err := os.ReadDir(configs.TopologyBaseDir)
@@ -35,26 +39,6 @@ func (t *TopologyRepository) RefreshRepository() error {
 
 		t.Topologies = append(t.Topologies, strings.TrimSuffix(fileName, jsonSuffix))
 	}
-
-	return nil
-}
-
-func (t *TopologyRepository) DeleteTopology(topologyName string) error {
-	if err := os.Remove(configs.TopologyBaseDir + topologyName + jsonSuffix); err != nil {
-		return err
-	}
-
-	// find element in the slice
-	var index int
-	for i, name := range t.Topologies {
-		if topologyName == name {
-			index = i
-			break
-		}
-	}
-
-	// delete the element
-	t.Topologies = append(t.Topologies[:index], t.Topologies[index+1:]...)
 
 	return nil
 }
@@ -84,6 +68,26 @@ func (t *TopologyRepository) SaveTopology(fileName string, graph *topology.Graph
 		return err
 	}
 	t.Topologies = append(t.Topologies, fileName)
+
+	return nil
+}
+
+func (t *TopologyRepository) DeleteTopology(topologyName string) error {
+	if err := os.Remove(configs.TopologyBaseDir + topologyName + jsonSuffix); err != nil {
+		return err
+	}
+
+	// find element in the slice
+	var index int
+	for i, name := range t.Topologies {
+		if topologyName == name {
+			index = i
+			break
+		}
+	}
+
+	// delete the element
+	t.Topologies = append(t.Topologies[:index], t.Topologies[index+1:]...)
 
 	return nil
 }

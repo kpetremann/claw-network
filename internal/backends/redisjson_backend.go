@@ -18,7 +18,11 @@ type RedisRepository struct {
 	redisJSON   *rejson.Handler
 }
 
-func (r *RedisRepository) Connect() {
+func (r *RedisRepository) GetTopologies() []string {
+	return r.Topologies
+}
+
+func (r *RedisRepository) connect() {
 	r.redisClient = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "",
@@ -29,15 +33,15 @@ func (r *RedisRepository) Connect() {
 	r.redisJSON.SetGoRedisClient(r.redisClient)
 }
 
-func (r *RedisRepository) Disconnect() {
+func (r *RedisRepository) disconnect() {
 	if err := r.redisClient.Close(); err != nil {
 		fmt.Println("Failed to close Redis connection:", err)
 	}
 }
 
 func (r *RedisRepository) RefreshRepository() error {
-	r.Connect()
-	defer r.Disconnect()
+	r.connect()
+	defer r.disconnect()
 
 	r.Topologies = r.redisClient.Keys(context.Background(), "*").Val()
 
@@ -45,8 +49,8 @@ func (r *RedisRepository) RefreshRepository() error {
 }
 
 func (r *RedisRepository) SaveTopology(name string, graph *topology.Graph) error {
-	r.Connect()
-	defer r.Disconnect()
+	r.connect()
+	defer r.disconnect()
 
 	res, err := r.redisJSON.JSONSet(name, ".", graph)
 	if err != nil {
@@ -61,8 +65,8 @@ func (r *RedisRepository) SaveTopology(name string, graph *topology.Graph) error
 }
 
 func (r *RedisRepository) LoadTopology(topologyName string) (*topology.Graph, error) {
-	r.Connect()
-	defer r.Disconnect()
+	r.connect()
+	defer r.disconnect()
 
 	// query Redis
 	result, err := r.redisJSON.JSONGet(topologyName, ".")
@@ -72,14 +76,16 @@ func (r *RedisRepository) LoadTopology(topologyName string) (*topology.Graph, er
 
 	// cast result
 	var graph topology.Graph
-	json.Unmarshal(result.([]byte), &graph)
+	if err := json.Unmarshal(result.([]byte), &graph); err != nil {
+		return nil, err
+	}
 
 	return &graph, nil
 }
 
 func (r *RedisRepository) DeleteTopology(topologyName string) error {
-	r.Connect()
-	defer r.Disconnect()
+	r.connect()
+	defer r.disconnect()
 
 	res, err := r.redisJSON.JSONDel(topologyName, ".")
 	if err != nil {
@@ -109,8 +115,8 @@ func countTrueFalse(status []bool) (int, int) {
 
 // Get topologies with details such as number of nodes and links up/down
 func (r *RedisRepository) ListTopologiesDetail() (map[string]map[string]int, error) {
-	r.Connect()
-	defer r.Disconnect()
+	r.connect()
+	defer r.disconnect()
 
 	// query Redis
 	linksResult, err := r.redisJSON.JSONMGet("$.links..status", r.Topologies...)
@@ -137,8 +143,12 @@ func (r *RedisRepository) ListTopologiesDetail() (map[string]map[string]int, err
 		var links []bool
 		var nodes []bool
 
-		json.Unmarshal(linksStatus[i].([]byte), &links)
-		json.Unmarshal(nodesStatus[i].([]byte), &nodes)
+		if err := json.Unmarshal(linksStatus[i].([]byte), &links); err != nil {
+			return nil, err
+		}
+		if err := json.Unmarshal(nodesStatus[i].([]byte), &nodes); err != nil {
+			return nil, err
+		}
 
 		// get statistics
 		linksUp, linksDown := countTrueFalse(links)

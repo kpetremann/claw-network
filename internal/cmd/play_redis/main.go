@@ -1,3 +1,4 @@
+// nolint
 package main
 
 import (
@@ -12,10 +13,10 @@ func MigrateFileToRedis() {
 	fileRepository := backends.TopologyRepository{}
 	redisRepository := backends.RedisRepository{}
 
-	fileRepository.RefreshRepository()
-	for _, name := range fileRepository.Topologies {
-		topology, _ := fileRepository.LoadTopology(name)
-		redisRepository.SaveTopology(name, topology)
+	if err := backends.MigrateRepository(&fileRepository, &redisRepository); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("Migration complete")
 	}
 }
 
