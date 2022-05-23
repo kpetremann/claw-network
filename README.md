@@ -30,13 +30,48 @@ Concerned operations can be: upgrade, reboot, risky maintenance etc...
 
 ClawNetwork can be leveraged to detect SPOF of any anomalies such as spine without downlinks.
 
-# Usage
+# Quickstart
 
-## Quickstart
+## From source
 
 Simply run ClawNetwork app using `go run .`
 
 Alternative: build the binary via `go build` and run it.
+
+## Using Docker compose
+
+### Default backend
+
+Run ClawNetwork with default backend (FileRepository):
+```shell
+docker-compose -f compose/docker-compose.yml up -d
+```
+
+FileRepository stores the topologies in dedicated JSON files on the disk.
+
+By default, this uses `examples/` directory provided in this repository.
+
+> At the moment this is not customizable, but it will be very soon.
+
+### Run with the Backend of your choice
+
+```shell
+docker-compose -f compose/docker-compose.yml -f <backend>.yml up -d
+```
+
+#### RedisJSON
+
+> recommended backend for production if you need to store topologies
+
+At the moment, Redis JSON is the only alternative backend:
+```shell
+docker-compose -f compose/docker-compose.yml -f redisjson.yml up -d
+```
+
+This backend leverages [RedisJSON module](https://redis.io/docs/stack/json/) to store pure JSON to Redis. Persistence is enabled and forced at each changes (ADD/DELETE) by ClawNetwork.
+
+
+# Usage
 
 ### Manage stored topologies
 
