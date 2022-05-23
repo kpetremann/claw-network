@@ -10,7 +10,7 @@ import (
 // Get all topologies from FileBackend repository
 // Save them to RedisRepository
 func MigrateFileToRedis() {
-	fileRepository := backends.TopologyRepository{}
+	fileRepository := backends.FileRepository{}
 	redisRepository := backends.RedisRepository{}
 
 	if err := backends.MigrateRepository(&fileRepository, &redisRepository); err != nil {

@@ -12,16 +12,16 @@ import (
 
 const jsonSuffix = ".json"
 
-type TopologyRepository struct {
+type FileRepository struct {
 	Topologies []string
 }
 
-func (r *TopologyRepository) GetTopologies() []string {
+func (r *FileRepository) GetTopologies() []string {
 	return r.Topologies
 }
 
 // Get topology list from files
-func (t *TopologyRepository) RefreshRepository() error {
+func (t *FileRepository) RefreshRepository() error {
 	files, err := os.ReadDir(configs.TopologyBaseDir)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func (t *TopologyRepository) RefreshRepository() error {
 	return nil
 }
 
-func (t *TopologyRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
+func (t *FileRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
 	// TODO: check if in repository before trying to read file
 	byteValue, err := os.ReadFile(configs.TopologyBaseDir + topologyFile + jsonSuffix)
@@ -58,7 +58,7 @@ func (t *TopologyRepository) LoadTopology(topologyFile string) (*topology.Graph,
 	return &topo, nil
 }
 
-func (t *TopologyRepository) SaveTopology(fileName string, graph *topology.Graph) error {
+func (t *FileRepository) SaveTopology(fileName string, graph *topology.Graph) error {
 	jsonTopology, err := json.Marshal(graph)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (t *TopologyRepository) SaveTopology(fileName string, graph *topology.Graph
 	return nil
 }
 
-func (t *TopologyRepository) DeleteTopology(topologyName string) error {
+func (t *FileRepository) DeleteTopology(topologyName string) error {
 	if err := os.Remove(configs.TopologyBaseDir + topologyName + jsonSuffix); err != nil {
 		return err
 	}
