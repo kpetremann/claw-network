@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  claw-network:
+    build:
+      context: ../
+      dockerfile: ./Dockerfile
+    volumes:
+      - ../examples/:/app/claw-network/examples/
+    ports:
+      - "127.0.0.1:8080:8080"
