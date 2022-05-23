@@ -27,7 +27,8 @@ func NewSimulationManager() *SimulationManager {
 		for {
 			select {
 			case s.getRepository <- repository:
-			case repository.Topologies = <-s.writeRepository:
+			case newTopologyList := <-s.writeRepository:
+				repository.SetTopologies(newTopologyList)
 			}
 		}
 	}()

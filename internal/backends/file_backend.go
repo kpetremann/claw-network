@@ -16,8 +16,14 @@ type FileRepository struct {
 	Topologies []string
 }
 
+// Getter for Topologies
 func (r *FileRepository) GetTopologies() []string {
 	return r.Topologies
+}
+
+// Setter for Topologies
+func (r *FileRepository) SetTopologies(topologies []string) {
+	r.Topologies = topologies
 }
 
 // Get topology list from files
