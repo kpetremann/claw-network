@@ -61,7 +61,7 @@ func (r *RedisRepository) SaveTopology(name string, graph *topology.Graph) error
 		return errors.New("Failed to save topology")
 	}
 
-	redisClient.Save(context.Background())
+	redisClient.BgSave(context.Background())
 
 	return nil
 }
@@ -98,7 +98,7 @@ func (r *RedisRepository) DeleteTopology(topologyName string) error {
 		return errors.New("Failed to delete topology")
 	}
 
-	redisClient.Save(context.Background())
+	redisClient.BgSave(context.Background())
 
 	return nil
 }
