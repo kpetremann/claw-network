@@ -6,5 +6,10 @@ services:
     volumes:
       - "redisjson-data:/data/"
 
+  claw-network:
+    environment:
+      - "CLAW_BACKEND=redis"
+      - "CLAW_BACKENDS.REDIS.HOST=redisjson"
+
 volumes:
   redisjson-data:
