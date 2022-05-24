@@ -96,6 +96,7 @@ List of parameters available (`varenv format` | `YAML format`):
 - POST `/topology/:topology_name`: create a new topology
 - DELETE `/topology/:topology_name`: delete a topology
 - GET `/topology/details`: list stored topologies with some stats
+- GET `/topology/:topology_name/details`: get topology stats
 
 ### Simulation on a stored topology
 
