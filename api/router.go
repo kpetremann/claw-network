@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +32,7 @@ func ListenAndServer() {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
 
-	listenAddrPort := fmt.Sprintf("%s:%s", configs.ListenAddress, configs.ListenPort)
+	listenAddrPort := fmt.Sprintf("%s:%s", Config.ListenAddress, Config.ListenPort)
 
 	if err := router.Run(listenAddrPort); err != nil {
 		panic(err)

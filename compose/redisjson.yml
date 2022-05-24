@@ -1,0 +1,15 @@
+services:
+  redisjson:
+    image: redislabs/rejson
+    ports:
+      - "127.0.0.1:6379:6379"
+    volumes:
+      - "redisjson-data:/data/"
+
+  claw-network:
+    environment:
+      - "CLAW_BACKEND=redis"
+      - "CLAW_BACKENDS.REDIS.HOST=redisjson"
+
+volumes:
+  redisjson-data:

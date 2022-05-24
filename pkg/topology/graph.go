@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 )
 
 type LinkNotSupportedError struct {
@@ -45,7 +45,7 @@ func (g *Graph) UnmarshalJSON(data []byte) error {
 	g.Nodes = make(map[string]*Node)
 	for _, node := range jGraph.Nodes {
 		g.Nodes[node.Hostname] = node
-		if node.Role == configs.BottomDeviceRole {
+		if node.Role == Config.BottomDeviceRole {
 			g.BottomNode = append(g.BottomNode, node)
 		}
 	}

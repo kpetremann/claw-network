@@ -130,7 +130,7 @@ func (s *SimulationManager) AddTopology(context *gin.Context) {
 		return
 	}
 
-	s.writeRepository <- repo.Topologies
+	s.writeRepository <- repo.GetTopologies()
 
 	context.JSON(200, gin.H{"result": "saved"})
 }
@@ -161,7 +161,7 @@ func (s *SimulationManager) DeleteTopology(context *gin.Context) {
 		return
 	}
 
-	s.writeRepository <- repo.Topologies
+	s.writeRepository <- repo.GetTopologies()
 
 	context.JSON(200, gin.H{"result": "deleted"})
 }

@@ -46,6 +46,8 @@ func testAddAndDeleteTopology() {
 	printJson(string(body))
 	printStatus("Successfully added topology")
 
+	testListTopology()
+
 	printTitle("Testing delete topology")
 	body, _, err = request("topology/test", "DELETE", nil)
 
@@ -56,4 +58,6 @@ func testAddAndDeleteTopology() {
 
 	printJson(string(body))
 	printStatus("Successfully deleted topology")
+
+	testListTopology()
 }

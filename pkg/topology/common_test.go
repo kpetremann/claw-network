@@ -1,6 +1,11 @@
 package topology
 
+import (
+	. "github.com/kpetremann/claw-network/configs"
+)
+
 func GenerateMinimumGraph() *Graph {
+	LoadTestConfig()
 	nodes := map[string]*Node{
 		"tor1":   {Hostname: "tor1", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}, Downlinks: map[string]*Link{}, Status: true, RealStatus: true},
 		"tor2":   {Hostname: "tor2", Layer: 1, Role: "tor", Uplinks: map[string]*Link{}, Downlinks: map[string]*Link{}, Status: true, RealStatus: true},
@@ -20,4 +25,13 @@ func GenerateMinimumGraph() *Graph {
 	}
 
 	return &graph
+}
+
+func LoadTestConfig() {
+	Config.ListenAddress = "127.0.0.1"
+	Config.ListenPort = "8080"
+	Config.TopDeviceRole = "edge"
+	Config.BottomDeviceRole = "tor"
+	Config.Backend = "File"
+	Config.Backends.File.Path = "./examples/"
 }
