@@ -52,6 +52,8 @@ func TestNodeComputeAllLinkStatus(t *testing.T) {
 }
 
 func TestNodeIsIsolatedFromTop(t *testing.T) {
+	LoadTestConfig()
+
 	// ToR
 	tor := Node{Hostname: "tor-01-01", Role: "tor", Layer: 1, Status: false, RealStatus: true}
 	tor.Uplinks = map[string]*Link{
@@ -76,6 +78,8 @@ func TestNodeIsIsolatedFromTop(t *testing.T) {
 }
 
 func TestNodeIsConnectedTor(t *testing.T) {
+	LoadTestConfig()
+
 	tor := Node{Hostname: "tor-01-01", Role: "tor", Layer: 1, Status: false, RealStatus: true, Uplinks: map[string]*Link{}, Downlinks: map[string]*Link{}}
 	if used, _ := tor.IsConnected(); used == true {
 		t.Error("Bottom nodes without uplinks should not be considered connected")
@@ -115,6 +119,8 @@ func TestNodeIsConnectedSpine(t *testing.T) {
 }
 
 func TestNodeIsConnectedEdge(t *testing.T) {
+	LoadTestConfig()
+
 	edge := Node{Hostname: "edge1", Role: "edge", Layer: 3, Status: false, RealStatus: true, Uplinks: map[string]*Link{}, Downlinks: map[string]*Link{}}
 	if used, _ := edge.IsConnected(); used == true {
 		t.Error("Edges without downlinks should not be considered connected")

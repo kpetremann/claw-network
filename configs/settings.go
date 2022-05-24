@@ -27,13 +27,7 @@ type config struct {
 
 var Config config
 
-func LoadConfig() error {
-	viper.SetConfigName("settings")
-	viper.AddConfigPath(".")
-	viper.SetConfigType("yaml")
-	viper.SetEnvPrefix("claw")
-	viper.AutomaticEnv()
-
+func setDefaults() {
 	viper.SetDefault("ListenAddress", "0.0.0.0")
 	viper.SetDefault("ListenPort", "8080")
 	viper.SetDefault("TopDeviceRole", "edge")
@@ -47,7 +41,15 @@ func LoadConfig() error {
 	viper.SetDefault("Backends.Redis.Port", 6379)
 	viper.SetDefault("Backends.Redis.Password", "")
 	viper.SetDefault("Backends.Redis.DB", 0)
+}
 
+func LoadConfig() error {
+	viper.SetConfigName("settings")
+	viper.AddConfigPath(".")
+	viper.SetConfigType("yaml")
+	viper.SetEnvPrefix("claw")
+
+	setDefaults()
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
