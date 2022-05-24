@@ -31,7 +31,7 @@ func main() {
 	redisRepository := backends.RedisRepository{}
 
 	redisRepository.RefreshRepository()
-	d, _ := redisRepository.ListTopologiesDetail()
+	d, _ := redisRepository.ListTopologiesDetails()
 	fmt.Println(d)
 
 	t, _ := redisRepository.LoadTopology("small_topology")
