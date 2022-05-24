@@ -9,7 +9,7 @@ services:
   claw-network:
     environment:
       - "CLAW_BACKEND=redis"
-      - "CLAW_BACKENDS.REDIS.HOST=redisjson"
+      - "CLAW_BACKENDS_REDIS_HOST=redisjson"
 
 volumes:
   redisjson-data:
