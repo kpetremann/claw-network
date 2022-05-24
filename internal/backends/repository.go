@@ -9,6 +9,7 @@ type Repository interface {
 	LoadTopology(topologyName string) (*topology.Graph, error)
 	SaveTopology(name string, graph *topology.Graph) error
 	DeleteTopology(topologyName string) error
+	ListTopologiesDetail() (map[string]map[string]int, error)
 }
 
 func MigrateRepository(currentRepo, newRepo Repository) error {

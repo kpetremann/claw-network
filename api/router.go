@@ -13,6 +13,7 @@ func ListenAndServer() {
 	s := NewSimulationManager()
 
 	router.GET("/topology", s.ListTopology)
+	router.GET("/topology/details", s.ListTopologiesDetails)
 
 	router.GET("/topology/:topology", s.GetTopology)
 	router.POST("/topology/:topology", s.AddTopology)
