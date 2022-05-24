@@ -17,8 +17,8 @@ This is in development and not fully usable yet.
 But you can play with it :)
 ```
 
-# Usecases
 
+# Usecases
 
 ## Operations
 
@@ -70,6 +70,22 @@ docker-compose -f compose/docker-compose.yml -f redisjson.yml up -d
 
 This backend leverages [RedisJSON module](https://redis.io/docs/stack/json/) to store pure JSON to Redis. Persistence is enabled and forced at each changes (ADD/DELETE) by ClawNetwork.
 
+## Configuration
+
+Configuration can be configured either via environment variables or YAML file (settings.yaml).
+
+List of parameters available (`varenv format` | `YAML format`):
+
+- `CLAW_LISTENADDRESS` | `ListenAddress`: ClawNetwork API listen address (default: `"0.0.0.0"`)
+- `CLAW_LISTENPORT` | `ListenPort`: ClawNetwork API listen port (default: `"8080"`)
+- `CLAW_TOPDEVICEROLE` | `TopDeviceRole`: Role of device at the top of the topology graph (default: `"edge"`)
+- `CLAW_BOTTOMDEVICEROLE` | `BottomDeviceRole`: Role of device at the Bottom of the topology graph (default: `"tor"`)
+- `CLAW_BACKEND` | `Backend`: Choose backend to store topologies (choices: `"file", "redis"`, default: `"file"`)
+- `CLAW_BACKENDS.FILE.PATH` | `Backends.Redis.Path`: Redis DB to use (default: `"./topologies/"`)
+- `CLAW_BACKENDS.REDIS.HOST` | `Backends.Redis.Host`: Redis server address (default: `"localhost"`)
+- `CLAW_BACKENDS.REDIS.PORT` | `Backends.Redis.Port`: Redis server port (default: `"6379"`)
+- `CLAW_BACKENDS.REDIS.PASSWORD` | `Backends.Redis.Password`: Redis password (default: `""`)
+- `CLAW_BACKENDS.REDIS.DB` | `Backends.Redis.DB`: Redis DB to use (default: `0`)
 
 # Usage
 
@@ -147,6 +163,7 @@ Simulations:
 - first simulation considering first fabric node as down
 - second simulation considering second fabric node as down but with the first up
 - ...
+
 
 # Example usecase
 
@@ -257,6 +274,7 @@ Below some ideas of possible integrations:
  |        Client         |------------------------->|  ClawNetwork  |<------------------------>| Storage (FS, redis,...) |
  +-----------------------+                          +---------------+       get topology       +-------------------------+
 ```
+
 
 # Todo / coming features
 

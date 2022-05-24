@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/pkg/topology"
 )
 
@@ -28,7 +28,7 @@ func (r *FileRepository) SetTopologies(topologies []string) {
 
 // Get topology list from files
 func (t *FileRepository) RefreshRepository() error {
-	files, err := os.ReadDir(configs.TopologyBaseDir)
+	files, err := os.ReadDir(Config.Backends.File.Path)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (t *FileRepository) RefreshRepository() error {
 func (t *FileRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
 	// TODO: check if in repository before trying to read file
-	byteValue, err := os.ReadFile(configs.TopologyBaseDir + topologyFile + jsonSuffix)
+	byteValue, err := os.ReadFile(Config.Backends.File.Path + topologyFile + jsonSuffix)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +70,7 @@ func (t *FileRepository) SaveTopology(fileName string, graph *topology.Graph) er
 		return err
 	}
 
-	if err := os.WriteFile(configs.TopologyBaseDir+fileName+jsonSuffix, jsonTopology, 0644); err != nil {
+	if err := os.WriteFile(Config.Backends.File.Path+fileName+jsonSuffix, jsonTopology, 0644); err != nil {
 		return err
 	}
 	t.Topologies = append(t.Topologies, fileName)
@@ -79,7 +79,7 @@ func (t *FileRepository) SaveTopology(fileName string, graph *topology.Graph) er
 }
 
 func (t *FileRepository) DeleteTopology(topologyName string) error {
-	if err := os.Remove(configs.TopologyBaseDir + topologyName + jsonSuffix); err != nil {
+	if err := os.Remove(Config.Backends.File.Path + topologyName + jsonSuffix); err != nil {
 		return err
 	}
 

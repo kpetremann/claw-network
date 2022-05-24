@@ -14,12 +14,16 @@
 # Dependency directories (remove the comment below to include it)
 vendor/
 
-# visual studio code
+# Visual Studio Code
 .vscode
 
-# tagged file
+# Tagged file
 *.ignore
 
-# artifacts
+# Artifacts
 topology.json
 claw-network
+
+# Configuration
+settings.yml
+settings.yaml

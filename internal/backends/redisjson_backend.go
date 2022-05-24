@@ -9,6 +9,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/nitishm/go-rejson/v4"
 
+	. "github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/pkg/topology"
 )
 
@@ -16,15 +17,21 @@ type RedisRepository struct {
 	Topologies []string
 }
 
+// Getter for Topologies
 func (r *RedisRepository) GetTopologies() []string {
 	return r.Topologies
 }
 
+// Setter for Topologies
+func (r *RedisRepository) SetTopologies(topologies []string) {
+	r.Topologies = topologies
+}
 func connect() (*redis.Client, *rejson.Handler) {
+	addr := fmt.Sprintf("%s:%d", Config.Backends.Redis.Host, Config.Backends.Redis.Port)
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:     addr,
+		Password: Config.Backends.Redis.Password,
+		DB:       Config.Backends.Redis.DB,
 	})
 
 	redisJSON := rejson.NewReJSONHandler()

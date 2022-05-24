@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 )
 
 type Node struct {
@@ -45,7 +45,7 @@ func (n *Node) ComputeAllLinkStatus(buildId int) {
 }
 
 func (n *Node) IsIsolatedFromTop() (bool, error) {
-	if n.Role == configs.TopDeviceRole {
+	if n.Role == Config.TopDeviceRole {
 		return false, nil
 	}
 
@@ -71,12 +71,12 @@ func (n *Node) IsConnected() (bool, Anomalies) {
 	res := true
 	issues := Anomalies{Node: n.Hostname}
 
-	if n.Role != configs.TopDeviceRole && len(n.Uplinks) == 0 {
+	if n.Role != Config.TopDeviceRole && len(n.Uplinks) == 0 {
 		res = false
 		anomaly := Anomaly{Type: "not connected", Message: "no uplink"}
 		issues.Anomalies = append(issues.Anomalies, anomaly)
 	}
-	if n.Role != configs.BottomDeviceRole && len(n.Downlinks) == 0 {
+	if n.Role != Config.BottomDeviceRole && len(n.Downlinks) == 0 {
 		res = false
 		anomaly := Anomaly{Type: "not connected", Message: "no downlink"}
 		issues.Anomalies = append(issues.Anomalies, anomaly)

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 )
 
 type Link struct {
@@ -55,7 +55,7 @@ func (l *Link) ComputeNorthPathStatus(buildId int) bool {
 		l.BuildId = buildId
 
 		// check if edge has been reached
-		if l.NorthNode.Role == configs.TopDeviceRole {
+		if l.NorthNode.Role == Config.TopDeviceRole {
 			l.CanReachEdge = l.Status
 		} else {
 			l.CanReachEdge = false

@@ -3,7 +3,7 @@ package simulations
 import (
 	"fmt"
 
-	"github.com/kpetremann/claw-network/configs"
+	. "github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/internal/utils"
 	"github.com/kpetremann/claw-network/pkg/topology"
 )
@@ -80,7 +80,7 @@ func RunAllNodesScenarios(graph *topology.Graph) (*SimulationResult, error) {
 
 	defer utils.Timer(&results.Performance)()
 	for _, node := range graph.Nodes {
-		if node.Role == configs.BottomDeviceRole {
+		if node.Role == Config.BottomDeviceRole {
 			continue
 		}
 		result, err := runScenario(graph, []string{node.Hostname}, nil)
