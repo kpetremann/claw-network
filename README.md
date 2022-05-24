@@ -81,11 +81,11 @@ List of parameters available (`varenv format` | `YAML format`):
 - `CLAW_TOPDEVICEROLE` | `TopDeviceRole`: Role of device at the top of the topology graph (default: `"edge"`)
 - `CLAW_BOTTOMDEVICEROLE` | `BottomDeviceRole`: Role of device at the Bottom of the topology graph (default: `"tor"`)
 - `CLAW_BACKEND` | `Backend`: Choose backend to store topologies (choices: `"file", "redis"`, default: `"file"`)
-- `CLAW_BACKENDS.FILE.PATH` | `Backends.Redis.Path`: Redis DB to use (default: `"./topologies/"`)
-- `CLAW_BACKENDS.REDIS.HOST` | `Backends.Redis.Host`: Redis server address (default: `"localhost"`)
-- `CLAW_BACKENDS.REDIS.PORT` | `Backends.Redis.Port`: Redis server port (default: `"6379"`)
-- `CLAW_BACKENDS.REDIS.PASSWORD` | `Backends.Redis.Password`: Redis password (default: `""`)
-- `CLAW_BACKENDS.REDIS.DB` | `Backends.Redis.DB`: Redis DB to use (default: `0`)
+- `CLAW_BACKENDS_FILE_PATH` | `Backends.Redis.Path`: Redis DB to use (default: `"./topologies/"`)
+- `CLAW_BACKENDS_REDIS_HOST` | `Backends.Redis.Host`: Redis server address (default: `"localhost"`)
+- `CLAW_BACKENDS_REDIS_PORT` | `Backends.Redis.Port`: Redis server port (default: `"6379"`)
+- `CLAW_BACKENDS_REDIS_PASSWORD` | `Backends.Redis.Password`: Redis password (default: `""`)
+- `CLAW_BACKENDS_REDIS_DB` | `Backends.Redis.DB`: Redis DB to use (default: `0`)
 
 # Usage
 

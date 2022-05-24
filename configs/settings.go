@@ -2,6 +2,7 @@ package configs
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -48,6 +49,9 @@ func LoadConfig() error {
 	viper.AddConfigPath(".")
 	viper.SetConfigType("yaml")
 	viper.SetEnvPrefix("claw")
+
+	replacer := strings.NewReplacer(".", "_")
+	viper.SetEnvKeyReplacer(replacer)
 
 	setDefaults()
 	viper.AutomaticEnv()
