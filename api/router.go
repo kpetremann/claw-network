@@ -14,6 +14,7 @@ func ListenAndServer() {
 
 	router.GET("/topology", s.ListTopology)
 	router.GET("/topology/details", s.ListTopologiesDetails)
+	router.GET("/topology/:topology/details", s.GetTopologyDetails)
 
 	router.GET("/topology/:topology", s.GetTopology)
 	router.POST("/topology/:topology", s.AddTopology)

@@ -124,8 +124,55 @@ func countTrueFalse(status []bool) (int, int) {
 	return trueCount, falseCount
 }
 
+func extractTopologyStatus(nodesStatus, linksStatus []byte) (map[string]int, error) {
+	// cast results
+	var nodes []bool
+	var links []bool
+
+	if err := json.Unmarshal(nodesStatus, &nodes); err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal(linksStatus, &links); err != nil {
+		return nil, err
+	}
+
+	// get statistics
+	linksUp, linksDown := countTrueFalse(links)
+	nodesUp, nodesDown := countTrueFalse(nodes)
+
+	results := map[string]int{
+		"links_up":    linksUp,
+		"links_down":  linksDown,
+		"links_total": linksUp + linksDown,
+		"nodes_up":    nodesUp,
+		"nodes_down":  nodesDown,
+		"nodes_total": nodesUp + nodesDown,
+	}
+
+	return results, nil
+}
+
+func (t *RedisRepository) GetTopologyDetails(topologyName string) (map[string]int, error) {
+	redisClient, redisJSON := connect()
+	defer disconnect(redisClient)
+
+	// query Redis
+	linksResult, err := redisJSON.JSONGet(topologyName, "$.links..status")
+	if err != nil {
+		return nil, err
+	}
+
+	nodesResult, err := redisJSON.JSONGet(topologyName, "$.nodes..status")
+	if err != nil {
+		return nil, err
+	}
+
+	return extractTopologyStatus(nodesResult.([]byte), linksResult.([]byte))
+}
+
 // Get topologies with details such as number of nodes and links up/down
-func (r *RedisRepository) ListTopologiesDetail() (map[string]map[string]int, error) {
+func (r *RedisRepository) ListTopologiesDetails() (map[string]map[string]int, error) {
 	redisClient, redisJSON := connect()
 	defer disconnect(redisClient)
 
@@ -150,28 +197,9 @@ func (r *RedisRepository) ListTopologiesDetail() (map[string]map[string]int, err
 	// compute results
 	results := make(map[string]map[string]int)
 	for i, topology := range r.Topologies {
-		// cast results
-		var links []bool
-		var nodes []bool
-
-		if err := json.Unmarshal(linksStatus[i].([]byte), &links); err != nil {
+		results[topology], err = extractTopologyStatus(nodesStatus[i].([]byte), linksStatus[i].([]byte))
+		if err != nil {
 			return nil, err
-		}
-		if err := json.Unmarshal(nodesStatus[i].([]byte), &nodes); err != nil {
-			return nil, err
-		}
-
-		// get statistics
-		linksUp, linksDown := countTrueFalse(links)
-		nodesUp, nodesDown := countTrueFalse(nodes)
-
-		results[topology] = map[string]int{
-			"links_up":    linksUp,
-			"links_down":  linksDown,
-			"links_total": linksUp + linksDown,
-			"nodes_up":    nodesUp,
-			"nodes_down":  nodesDown,
-			"nodes_total": nodesUp + nodesDown,
 		}
 	}
 

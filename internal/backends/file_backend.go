@@ -104,7 +104,12 @@ func (t *FileRepository) DeleteTopology(topologyName string) error {
 	return nil
 }
 
-func getTopologyDetail(topology *topology.Graph) map[string]int {
+func (t *FileRepository) GetTopologyDetails(topologyName string) (map[string]int, error) {
+	topology, err := t.LoadTopology(topologyName)
+	if err != nil {
+		return nil, err
+	}
+
 	results := make(map[string]int)
 	results["nodes_total"] = len(topology.Nodes)
 	results["links_total"] = len(topology.Links)
@@ -124,19 +129,18 @@ func getTopologyDetail(topology *topology.Graph) map[string]int {
 	results["nodes_up"] = results["nodes_total"] - results["node_down"]
 	results["links_up"] = results["links_total"] - results["link_down"]
 
-	return results
+	return results, nil
 }
 
-func (t *FileRepository) ListTopologiesDetail() (map[string]map[string]int, error) {
+func (t *FileRepository) ListTopologiesDetails() (map[string]map[string]int, error) {
+	var err error
 	topologies := make(map[string]map[string]int)
 
 	for _, topologyName := range t.Topologies {
-		topology, err := t.LoadTopology(topologyName)
+		topologies[topologyName], err = t.GetTopologyDetails(topologyName)
 		if err != nil {
 			return nil, err
 		}
-
-		topologies[topologyName] = getTopologyDetail(topology)
 	}
 
 	return topologies, nil

@@ -141,7 +141,7 @@ func (s *SimulationManager) ListTopology(context *gin.Context) {
 
 func (s *SimulationManager) ListTopologiesDetails(context *gin.Context) {
 	repo := <-s.getRepository
-	topoListDetails, err := repo.ListTopologiesDetail()
+	topoListDetails, err := repo.ListTopologiesDetails()
 
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
@@ -156,6 +156,19 @@ func (s *SimulationManager) GetTopology(context *gin.Context) {
 	repo := <-s.getRepository
 
 	topo, err := repo.LoadTopology(topologyName)
+	if err != nil {
+		context.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	context.JSON(200, topo)
+}
+
+func (s *SimulationManager) GetTopologyDetails(context *gin.Context) {
+	topologyName := context.Param("topology")
+	repo := <-s.getRepository
+
+	topo, err := repo.GetTopologyDetails(topologyName)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
