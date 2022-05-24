@@ -3,7 +3,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 
+	"github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/internal/backends"
 )
 
@@ -21,6 +23,10 @@ func MigrateFileToRedis() {
 }
 
 func main() {
+	os.Setenv("CLAW_BACKENDS.FILE.PATH", "./examples/")
+	if err := configs.LoadConfig(); err != nil {
+		panic(err)
+	}
 	MigrateFileToRedis()
 	redisRepository := backends.RedisRepository{}
 
