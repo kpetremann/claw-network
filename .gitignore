@@ -21,6 +21,7 @@ vendor/
 *.ignore
 
 # Artifacts
+topologies/
 topology.json
 claw-network
 

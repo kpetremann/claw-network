@@ -1,4 +1,0 @@
----
-ListenAddress: "127.0.0.01"
-ListenPort: "8081"
-Backend: "Redis"

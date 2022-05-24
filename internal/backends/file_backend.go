@@ -28,6 +28,12 @@ func (r *FileRepository) SetTopologies(topologies []string) {
 
 // Get topology list from files
 func (t *FileRepository) RefreshRepository() error {
+	if _, err := os.Stat(Config.Backends.File.Path); os.IsNotExist(err) {
+		if err := os.Mkdir(Config.Backends.File.Path, os.ModePerm); err != nil {
+			panic(err)
+		}
+	}
+
 	files, err := os.ReadDir(Config.Backends.File.Path)
 	if err != nil {
 		return err
