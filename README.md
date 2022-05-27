@@ -11,12 +11,11 @@ ClawNetwork is a tool to simulate a network and evaluate failures impacts on Top
 It has been specially crafted for Clos Matrix network. For now, cyclic graphs are not supported. Only trees are.
 
 ```
-Important notice:
+ClawNetwork is in active development.
+The main features are implemented, but endpoints, structures and functions may change.
 
-This is in development and not fully usable yet.
-But you can play with it :)
+But it is now usable and you are free to play with it :)
 ```
-
 
 # Usecases
 
