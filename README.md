@@ -2,6 +2,7 @@
 
 [![status](https://img.shields.io/badge/status-in%20development-orange)](https://github.com/kpetremann/claw-network/)
 [![Go](https://img.shields.io/github/go-mod/go-version/kpetremann/claw-network)](https://github.com/kpetremann/claw-network/)
+[![CI](https://github.com/kpetremann/claw-network/actions/workflows/go.yml/badge.svg)](https://github.com/kpetremann/claw-network/actions/workflows/go.yml)
 [![GitHub](https://img.shields.io/github/license/kpetremann/claw-network)](https://github.com/kpetremann/claw-network/blob/main/LICENSE)
 
 # Overview
