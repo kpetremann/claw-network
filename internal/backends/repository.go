@@ -4,7 +4,6 @@ import "github.com/kpetremann/claw-network/pkg/topology"
 
 type Repository interface {
 	GetTopologies() []string
-	SetTopologies(topologies []string)
 	RefreshRepository() error
 	LoadTopology(topologyName string) (*topology.Graph, error)
 	SaveTopology(name string, graph *topology.Graph) error

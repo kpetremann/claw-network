@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	. "github.com/kpetremann/claw-network/configs"
 	"github.com/kpetremann/claw-network/pkg/topology"
@@ -14,16 +15,17 @@ const jsonSuffix = ".json"
 
 type FileRepository struct {
 	Topologies []string
+	lock       sync.RWMutex
 }
 
 // Getter for Topologies
 func (r *FileRepository) GetTopologies() []string {
-	return r.Topologies
-}
+	r.lock.RLock()
+	defer r.lock.RUnlock()
 
-// Setter for Topologies
-func (r *FileRepository) SetTopologies(topologies []string) {
-	r.Topologies = topologies
+	topologiesCopy := make([]string, len(r.Topologies))
+	copy(topologiesCopy, r.Topologies)
+	return topologiesCopy
 }
 
 // Get topology list from files
@@ -34,11 +36,15 @@ func (t *FileRepository) RefreshRepository() error {
 		}
 	}
 
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
 	files, err := os.ReadDir(Config.Backends.File.Path)
 	if err != nil {
 		return err
 	}
 
+	var newTopologyList []string
 	for _, file := range files {
 		if file.IsDir() {
 			continue
@@ -49,19 +55,24 @@ func (t *FileRepository) RefreshRepository() error {
 			continue
 		}
 
-		t.Topologies = append(t.Topologies, strings.TrimSuffix(fileName, jsonSuffix))
+		newTopologyList = append(newTopologyList, strings.TrimSuffix(fileName, jsonSuffix))
 	}
+
+	t.Topologies = newTopologyList
 
 	return nil
 }
 
 func (t *FileRepository) LoadTopology(topologyFile string) (*topology.Graph, error) {
 	var topo topology.Graph
-	// TODO: check if in repository before trying to read file
+
+	t.lock.RLock()
 	byteValue, err := os.ReadFile(Config.Backends.File.Path + topologyFile + jsonSuffix)
 	if err != nil {
+		t.lock.RUnlock()
 		return nil, err
 	}
+	t.lock.RUnlock()
 
 	if err := json.Unmarshal(byteValue, &topo); err != nil {
 		return nil, err
@@ -76,30 +87,33 @@ func (t *FileRepository) SaveTopology(fileName string, graph *topology.Graph) er
 		return err
 	}
 
+	t.lock.Lock()
 	if err := os.WriteFile(Config.Backends.File.Path+fileName+jsonSuffix, jsonTopology, 0644); err != nil {
+		t.lock.Unlock()
 		return err
 	}
-	t.Topologies = append(t.Topologies, fileName)
+	t.lock.Unlock()
+
+	// Refresh topology list
+	if err := t.RefreshRepository(); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func (t *FileRepository) DeleteTopology(topologyName string) error {
+	t.lock.Lock()
 	if err := os.Remove(Config.Backends.File.Path + topologyName + jsonSuffix); err != nil {
+		t.lock.Unlock()
 		return err
 	}
+	t.lock.Unlock()
 
-	// find element in the slice
-	var index int
-	for i, name := range t.Topologies {
-		if topologyName == name {
-			index = i
-			break
-		}
+	// Refresh topology list
+	if err := t.RefreshRepository(); err != nil {
+		return err
 	}
-
-	// delete the element
-	t.Topologies = append(t.Topologies[:index], t.Topologies[index+1:]...)
 
 	return nil
 }

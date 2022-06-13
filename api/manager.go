@@ -9,8 +9,7 @@ import (
 )
 
 type SimulationManager struct {
-	getRepository   chan backends.Repository
-	writeRepository chan []string
+	repository backends.Repository
 }
 
 func getRepository() backends.Repository {
@@ -29,27 +28,12 @@ func getRepository() backends.Repository {
 }
 
 func NewSimulationManager() *SimulationManager {
-	s := &SimulationManager{
-		getRepository:   make(chan backends.Repository),
-		writeRepository: make(chan []string),
+	s := &SimulationManager{getRepository()}
+
+	fmt.Println("Loading repository")
+	if err := s.repository.RefreshRepository(); err != nil {
+		panic(err)
 	}
-
-	go func() {
-		repository := getRepository()
-
-		fmt.Println("Loading repository")
-		if err := repository.RefreshRepository(); err != nil {
-			panic(err)
-		}
-
-		for {
-			select {
-			case s.getRepository <- repository:
-			case newTopologyList := <-s.writeRepository:
-				repository.SetTopologies(newTopologyList)
-			}
-		}
-	}()
 
 	return s
 }

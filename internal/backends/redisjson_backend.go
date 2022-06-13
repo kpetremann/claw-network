@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/nitishm/go-rejson/v4"
@@ -15,17 +16,9 @@ import (
 
 type RedisRepository struct {
 	Topologies []string
+	lock       sync.RWMutex
 }
 
-// Getter for Topologies
-func (r *RedisRepository) GetTopologies() []string {
-	return r.Topologies
-}
-
-// Setter for Topologies
-func (r *RedisRepository) SetTopologies(topologies []string) {
-	r.Topologies = topologies
-}
 func connect() (*redis.Client, *rejson.Handler) {
 	addr := fmt.Sprintf("%s:%d", Config.Backends.Redis.Host, Config.Backends.Redis.Port)
 	redisClient := redis.NewClient(&redis.Options{
@@ -46,29 +39,23 @@ func disconnect(redisClient *redis.Client) {
 	}
 }
 
+// Getter for Topologies
+func (r *RedisRepository) GetTopologies() []string {
+	r.lock.RLock()
+	defer r.lock.RUnlock()
+
+	topologiesCopy := make([]string, len(r.Topologies))
+	copy(topologiesCopy, r.Topologies)
+	return topologiesCopy
+}
+
 func (r *RedisRepository) RefreshRepository() error {
 	redisClient, _ := connect()
 	defer disconnect(redisClient)
 
+	r.lock.RLock()
+	defer r.lock.RUnlock()
 	r.Topologies = redisClient.Keys(context.Background(), "*").Val()
-
-	return nil
-}
-
-func (r *RedisRepository) SaveTopology(name string, graph *topology.Graph) error {
-	redisClient, redisJSON := connect()
-	defer disconnect(redisClient)
-
-	res, err := redisJSON.JSONSet(name, ".", graph)
-	if err != nil {
-		return err
-	}
-
-	if res != "OK" {
-		return errors.New("Failed to save topology")
-	}
-
-	redisClient.BgSave(context.Background())
 
 	return nil
 }
@@ -78,10 +65,13 @@ func (r *RedisRepository) LoadTopology(topologyName string) (*topology.Graph, er
 	defer disconnect(redisClient)
 
 	// query Redis
+	r.lock.RLock()
 	result, err := redisJSON.JSONGet(topologyName, ".")
 	if err != nil {
+		r.lock.RUnlock()
 		return nil, err
 	}
+	r.lock.RUnlock()
 
 	// cast result
 	var graph topology.Graph
@@ -92,20 +82,54 @@ func (r *RedisRepository) LoadTopology(topologyName string) (*topology.Graph, er
 	return &graph, nil
 }
 
+func (r *RedisRepository) SaveTopology(name string, graph *topology.Graph) error {
+	redisClient, redisJSON := connect()
+	defer disconnect(redisClient)
+
+	r.lock.Lock()
+	res, err := redisJSON.JSONSet(name, ".", graph)
+	if err != nil {
+		r.lock.Unlock()
+		return err
+	}
+	r.lock.Unlock()
+
+	if res != "OK" {
+		return errors.New("Failed to save topology")
+	}
+
+	redisClient.BgSave(context.Background())
+
+	// Refresh topology list
+	if err := r.RefreshRepository(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *RedisRepository) DeleteTopology(topologyName string) error {
 	redisClient, redisJSON := connect()
 	defer disconnect(redisClient)
 
+	r.lock.Lock()
 	res, err := redisJSON.JSONDel(topologyName, ".")
 	if err != nil {
+		r.lock.Unlock()
 		return err
 	}
+	r.lock.Unlock()
 
 	if res.(int64) != 1 {
 		return errors.New("Failed to delete topology")
 	}
 
 	redisClient.BgSave(context.Background())
+
+	// Refresh topology list
+	if err := r.RefreshRepository(); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -153,20 +177,24 @@ func extractTopologyStatus(nodesStatus, linksStatus []byte) (map[string]int, err
 	return results, nil
 }
 
-func (t *RedisRepository) GetTopologyDetails(topologyName string) (map[string]int, error) {
+func (r *RedisRepository) GetTopologyDetails(topologyName string) (map[string]int, error) {
 	redisClient, redisJSON := connect()
 	defer disconnect(redisClient)
 
 	// query Redis
+	r.lock.RLock()
 	linksResult, err := redisJSON.JSONGet(topologyName, "$.links..status")
 	if err != nil {
+		r.lock.Unlock()
 		return nil, err
 	}
 
 	nodesResult, err := redisJSON.JSONGet(topologyName, "$.nodes..status")
 	if err != nil {
+		r.lock.Unlock()
 		return nil, err
 	}
+	r.lock.Unlock()
 
 	return extractTopologyStatus(nodesResult.([]byte), linksResult.([]byte))
 }
@@ -177,15 +205,19 @@ func (r *RedisRepository) ListTopologiesDetails() (map[string]map[string]int, er
 	defer disconnect(redisClient)
 
 	// query Redis
+	r.lock.RLock()
 	linksResult, err := redisJSON.JSONMGet("$.links..status", r.Topologies...)
 	if err != nil {
+		r.lock.Unlock()
 		return nil, err
 	}
 
 	nodesResult, err := redisJSON.JSONMGet("$.nodes..status", r.Topologies...)
 	if err != nil {
+		r.lock.Unlock()
 		return nil, err
 	}
+	r.lock.Unlock()
 
 	linksStatus := linksResult.([]interface{})
 	nodesStatus := nodesResult.([]interface{})

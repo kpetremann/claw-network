@@ -14,9 +14,8 @@ func (s *SimulationManager) RunOnExistingTopology(context *gin.Context) {
 	deviceDown := context.Param("device")
 	linkDown := context.Param("link")
 
-	repo := <-s.getRepository
+	graph, err := s.repository.LoadTopology(topologyName)
 
-	graph, err := repo.LoadTopology(topologyName)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -84,8 +83,7 @@ func (s *SimulationManager) RunScenario(context *gin.Context) {
 	case *topology.Graph:
 		graph = params.Graph.(*topology.Graph)
 	case string:
-		repo := <-s.getRepository
-		graph, err = repo.LoadTopology(params.Graph.(string))
+		graph, err = s.repository.LoadTopology(params.Graph.(string))
 		if err != nil {
 			context.JSON(500, gin.H{"error": err.Error()})
 			return
@@ -103,9 +101,8 @@ func (s *SimulationManager) RunScenario(context *gin.Context) {
 
 func (s *SimulationManager) GetAnomalies(context *gin.Context) {
 	topologyName := context.Param("topology")
-	repo := <-s.getRepository
 
-	topo, err := repo.LoadTopology(topologyName)
+	topo, err := s.repository.LoadTopology(topologyName)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -124,24 +121,20 @@ func (s *SimulationManager) AddTopology(context *gin.Context) {
 		return
 	}
 
-	repo := <-s.getRepository
-	if err := repo.SaveTopology(topologyName, &graph); err != nil {
+	if err := s.repository.SaveTopology(topologyName, &graph); err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-
-	s.writeRepository <- repo.GetTopologies()
 
 	context.JSON(200, gin.H{"result": "saved"})
 }
 
 func (s *SimulationManager) ListTopology(context *gin.Context) {
-	context.JSON(200, <-s.getRepository)
+	context.JSON(200, s.repository.GetTopologies())
 }
 
 func (s *SimulationManager) ListTopologiesDetails(context *gin.Context) {
-	repo := <-s.getRepository
-	topoListDetails, err := repo.ListTopologiesDetails()
+	topoListDetails, err := s.repository.ListTopologiesDetails()
 
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
@@ -153,9 +146,8 @@ func (s *SimulationManager) ListTopologiesDetails(context *gin.Context) {
 
 func (s *SimulationManager) GetTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
-	repo := <-s.getRepository
 
-	topo, err := repo.LoadTopology(topologyName)
+	topo, err := s.repository.LoadTopology(topologyName)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -166,9 +158,8 @@ func (s *SimulationManager) GetTopology(context *gin.Context) {
 
 func (s *SimulationManager) GetTopologyDetails(context *gin.Context) {
 	topologyName := context.Param("topology")
-	repo := <-s.getRepository
 
-	topo, err := repo.GetTopologyDetails(topologyName)
+	topo, err := s.repository.GetTopologyDetails(topologyName)
 	if err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -179,14 +170,11 @@ func (s *SimulationManager) GetTopologyDetails(context *gin.Context) {
 
 func (s *SimulationManager) DeleteTopology(context *gin.Context) {
 	topologyName := context.Param("topology")
-	repo := <-s.getRepository
 
-	if err := repo.DeleteTopology(topologyName); err != nil {
+	if err := s.repository.DeleteTopology(topologyName); err != nil {
 		context.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-
-	s.writeRepository <- repo.GetTopologies()
 
 	context.JSON(200, gin.H{"result": "deleted"})
 }

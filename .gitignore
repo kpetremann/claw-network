@@ -28,3 +28,4 @@ claw-network
 # Configuration
 settings.yml
 settings.yaml
+dist/
