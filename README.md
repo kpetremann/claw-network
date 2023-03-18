@@ -1,5 +1,3 @@
-<img align="right" width="320px" src="https://raw.githubusercontent.com/kpetremann/claw-network/main/img/ClawNetwork-logo.png" />
-
 [![status](https://img.shields.io/badge/status-in%20development-orange)](https://github.com/kpetremann/claw-network/)
 [![Go](https://img.shields.io/github/go-mod/go-version/kpetremann/claw-network)](https://github.com/kpetremann/claw-network/)
 [![CI](https://github.com/kpetremann/claw-network/actions/workflows/go.yml/badge.svg)](https://github.com/kpetremann/claw-network/actions/workflows/go.yml)
