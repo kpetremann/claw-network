@@ -274,8 +274,3 @@ Below some ideas of possible integrations:
  |        Client         |------------------------->|  ClawNetwork  |<------------------------>| Storage (FS, redis,...) |
  +-----------------------+                          +---------------+       get topology       +-------------------------+
 ```
-
-
-# Todo / coming features
-
-See [Project board](https://github.com/kpetremann/claw-network/projects/1)
